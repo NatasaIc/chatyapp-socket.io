@@ -12,6 +12,18 @@ app.use(express.static("public"));
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
   socket.emit("message", "Welcome to the chat");
+
+  socket.on("join_room", (room) => {
+    socket.join(room);
+  });
+
+  socket.on("leave_room", (room) => {
+    socket.leave(room);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", socket.id);
+  });
 });
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));
