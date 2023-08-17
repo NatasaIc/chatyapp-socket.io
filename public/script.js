@@ -13,7 +13,6 @@ const initChatty = () => {
 
   socket.emit("user_connected", username);
 
-
   socket.on("user_information_to_other_in_room", (username) => {
     const li = document.createElement("li");
     li.innerText = username + " " + "joined Chatty";
