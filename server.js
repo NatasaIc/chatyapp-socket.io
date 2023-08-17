@@ -12,8 +12,11 @@ app.use(express.static("public"));
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
 
+  // här lyssnar på ett event där användaren har connectat och tar emot username
   socket.on("user_connected", (username) => {
+    // här skickar vi iväg information (username) till de andra i rummet om att ny user connectat 
     socket.broadcast.emit("user_information_to_other_in_room", username); 
+    // här skickar vi iväg information (username) till den person som connectat - men måste vi verkligen göra det, den informationen har ju redan script??
     socket.emit("message_to_new_user", username);
   });
 
@@ -26,7 +29,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);
+    console.log("User disconnected: ", socket.id);      
   });
 });
 
