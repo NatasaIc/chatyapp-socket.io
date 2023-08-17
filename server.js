@@ -29,7 +29,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);      
+    console.log("User disconnected: ", socket.id);   
+    // här borde vi lägga in en socket.broadcast.emit som skickar att usern disconnectat - och sen gör vi en on på den i script-
+    // filen där vi skriver ut att användaren loggat ut (precis som när en användare loggar in)   
   });
 });
 
