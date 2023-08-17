@@ -11,7 +11,11 @@ app.use(express.static("public"));
 
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
-  socket.emit("message", "Welcome to the chat");
+
+  socket.on("user_connected", (username) => {
+    socket.broadcast.emit("user_information_to_other_in_room", username); 
+    socket.emit("message_to_new_user", username);
+  });
 
   socket.on("join_room", (room) => {
     socket.join(room);
