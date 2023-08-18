@@ -31,7 +31,6 @@ io.on("connection", (socket) => {
     socket.emit("message_to_new_user", username);
   });
 
-  // Listen for the "join_room" event
   socket.on("join_room", (room) => {
     // Join the specified room
     socket.join(room);
