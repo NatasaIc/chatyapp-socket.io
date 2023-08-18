@@ -34,12 +34,7 @@ const initChatty = () => {
       const li = document.createElement("li");
       li.innerText = username + " disconnected";
       listOfMessage.appendChild(li);
-    });
-
-    socket.on("disconnect", () => {
-      socket.emit("user_disconnected", username);
-    });
-  
+    });    
 };
 
 // klickar på knappen för att skapa användare och connecta - här borde vi kanske ha en verifiering??? //

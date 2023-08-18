@@ -20,12 +20,9 @@ io.on("connection", (socket) => {
     socket.emit("message_to_new_user", username);
   });
 
-  socket.on("user_disconnected", (username) => {
-    socket.broadcast.emit("user_disconnected_information_to_other_in_room", username); 
-  });
-
   socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);  
+    console.log("User disconnected: ", socket.id); 
+    socket.broadcast.emit("user_disconnected_information_to_other_in_room", socket.id); 
   });
 
   socket.on("join_room", (room) => {
@@ -36,9 +33,5 @@ io.on("connection", (socket) => {
     socket.leave(room);
   });
 });
-
-
-
-
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));
