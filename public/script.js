@@ -28,6 +28,17 @@ const initChatty = () => {
     li.innerText = "Welcome to Chatty " + username;
     listOfMessage.appendChild(li);
   });
+
+    // här lyssnar vi på eventet till alla andra - skickas meddelande om att någon disconnectat //
+    socket.on("user_disconnected_information_to_other_in_room", (username) => {
+      const li = document.createElement("li");
+      li.innerText = username + " disconnected";
+      listOfMessage.appendChild(li);
+    });
+
+    socket.on("disconnect", () => {
+      socket.emit("user_disconnected", username);
+    });
   
 };
 

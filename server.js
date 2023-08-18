@@ -20,6 +20,14 @@ io.on("connection", (socket) => {
     socket.emit("message_to_new_user", username);
   });
 
+  socket.on("user_disconnected", (username) => {
+    socket.broadcast.emit("user_disconnected_information_to_other_in_room", username); 
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", socket.id);  
+  });
+
   socket.on("join_room", (room) => {
     socket.join(room);
   });
@@ -27,12 +35,10 @@ io.on("connection", (socket) => {
   socket.on("leave_room", (room) => {
     socket.leave(room);
   });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);   
-    // här borde vi lägga in en socket.broadcast.emit som skickar att usern disconnectat - och sen gör vi en on på den i script-
-    // filen där vi skriver ut att användaren loggat ut (precis som när en användare loggar in)   
-  });
 });
+
+
+
+
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));
