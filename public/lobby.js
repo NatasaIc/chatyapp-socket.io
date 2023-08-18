@@ -1,11 +1,13 @@
 const socket = io({ autoConnect: false });
 const startBtn = document.getElementById("createUsernameButton");
+const joinBtn = document.getElementById("join");
+const leaveBtn = document.getElementById("leave");
 
 const input = document.getElementById("createUsernameInput");
 const listOfMessage = document.getElementById("listOfMessage");
 
 // Function to initialize the Chatty app
-const createUser = () => {
+const initChatty = () => {
   socket.connect();
   const username = input.value;
 
@@ -37,4 +39,12 @@ const displayMessage = (message) => {
   listOfMessage.appendChild(li);
 };
 
-startBtn.addEventListener("click", createUser);
+startBtn.addEventListener("click", initChatty);
+
+joinBtn.addEventListener("click", () => {
+  socket.emit("join_room", "123");
+});
+
+leaveBtn.addEventListener("click", () => {
+  socket.emit("leave_room", "123");
+});
