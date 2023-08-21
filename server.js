@@ -9,7 +9,7 @@ const io = new Server(server);
 
 let connectedUsers = [];
 
-console.log(connectedUsers);
+let createdRooms = [];
 
 app.use(express.static("public"));
 
@@ -34,6 +34,12 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("user_information_to_other_in_lobby", username);
     // Send a welcome message to the new user
     socket.emit("message_to_new_user", username);
+  });
+
+  socket.on("create_room", (room) => {
+    // Join the specified room
+    socket.join(room);
+    socket.broadcast.emit("user_information_to_other_in_room", username);
   });
 
   socket.on("join_room", (room) => {

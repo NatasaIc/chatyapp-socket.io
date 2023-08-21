@@ -3,6 +3,7 @@ const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
 const welcomeMessage = document.getElementById("welcomeMessage");
 const usersList = document.getElementById("usersList");
+const roomsList = document.getElementById("roomsList");
 
 // Function to display a message in the UI
 const displayMessage = (message) => {
