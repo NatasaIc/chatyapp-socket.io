@@ -7,7 +7,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-let users = []; 
+let connectedUsers = [];
+
+console.log(connectedUsers);
 
 app.use(express.static("public"));
 
@@ -26,8 +28,9 @@ io.on("connection", (socket) => {
   // Listen for the "user_connected" event
   socket.on("user_connected", (user) => {
     username = user; // Store the username
+    connectedUsers.push(username).toLocaleString;
     // Broadcast the user information to other users in the lobby
-    
+    io.emit("update_users_list", connectedUsers);
     socket.broadcast.emit("user_information_to_other_in_lobby", username);
     // Send a welcome message to the new user
     socket.emit("message_to_new_user", username);

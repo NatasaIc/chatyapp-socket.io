@@ -2,6 +2,7 @@ const socket = io({ autoConnect: false });
 const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
 const welcomeMessage = document.getElementById("welcomeMessage");
+const usersList = document.getElementById("usersList");
 
 // Function to display a message in the UI
 const displayMessage = (message) => {
@@ -22,7 +23,13 @@ if (params.username) {
 // Function to initialize the Chatty app
 const initChatty = () => {
   socket.connect();
-  
+
+  socket.on("update_users_list", (connectedUsers) => {
+    const li = document.createElement("li");
+    li.innerText = connectedUsers;
+    usersList.appendChild(li);
+  });
+
   // Emit the "user_connected" event with the username
   socket.emit("user_connected", params.username);
 
