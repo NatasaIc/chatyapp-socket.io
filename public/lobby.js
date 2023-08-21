@@ -22,8 +22,7 @@ if (params.username) {
 // Function to initialize the Chatty app
 const initChatty = () => {
   socket.connect();
-  const username = input.value; // här hämtar vi username som vi behöver för att allt ska fungera!!
-
+  
   // Emit the "user_connected" event with the username
   socket.emit("user_connected", params.username);
 
