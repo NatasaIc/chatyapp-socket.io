@@ -4,6 +4,8 @@ const leaveBtn = document.getElementById("leave");
 const welcomeMessage = document.getElementById("welcomeMessage");
 const usersList = document.getElementById("usersList");
 const roomsList = document.getElementById("roomsList");
+const createRoomBtn = document.getElementById("createRoom");
+const createRoomInput = document.getElementById("createRoomInput");
 
 // Function to display a message in the UI
 const displayMessage = (message) => {
@@ -47,6 +49,24 @@ const initChatty = () => {
     console.log(`User disconnected: ${username}`);
     displayMessage(`User ${username} disconnected`);
   });
+
+   // skapar nytt rum // just nu bara det som sker i lobbyn 
+  const createRoom = () => {
+    const roomName = createRoomInput.value; 
+    console.log(roomName);
+    socket.emit("create_room", roomName);
+  }
+
+  socket.on("update_rooms_list", (listOfRooms) => {
+    const li = document.createElement("li");
+    listOfRooms.forEach((room) => {
+      li.innerText = room;
+      roomsList.appendChild(li);
+    });
+  })
+
+  // skapar nytt rum // just nu bara det som sker i lobbyn 
+  createRoomBtn.addEventListener("click", createRoom);
 };
 
 initChatty(); // Call the initialization function

@@ -36,11 +36,18 @@ io.on("connection", (socket) => {
     socket.emit("message_to_new_user", username);
   });
 
+
   socket.on("create_room", (room) => {
-    // Join the specified room
-    socket.join(room);
-    socket.broadcast.emit("user_information_to_other_in_room", username);
+    createdRooms.push(room).toLocaleString;
+    io.emit("update_rooms_list", createdRooms);
+
+
+    // // Join the specified room
+    // socket.join(room);
+    // socket.broadcast.emit("user_information_to_other_in_room", username);
   });
+
+  io.emit("update_rooms_list", createdRooms);
 
   socket.on("join_room", (room) => {
     // Join the specified room
