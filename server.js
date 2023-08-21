@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("user_information_to_other_in_room", username);
   });
 
-  // Listen for the "leave_room" event
+  // Listen or the "leave_room" event
   socket.on("leave_room", (room) => {
     // Leave the specified room
     socket.leave(room);
