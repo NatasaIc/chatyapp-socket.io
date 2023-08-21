@@ -51,6 +51,11 @@ io.on("connection", (socket) => {
   // Listen for the "disconnect" event
   socket.on("disconnect", () => {
     console.log("User disconnected: ", socket.id);
+    if (username) {
+      const index = connectedUsers.indexOf(username);
+      if (index !== -1) connectedUsers.splice(index, 1);
+      io.emit("update_users_list", connectedUsers);
+    }
     // Emit the "user_disconnected" event with the username
     socket.broadcast.emit("user_disconnected", username); // Broadcast the username
   });

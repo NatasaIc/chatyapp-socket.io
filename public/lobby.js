@@ -25,6 +25,7 @@ const initChatty = () => {
   socket.connect();
 
   socket.on("update_users_list", (connectedUsers) => {
+    usersList.innerHTML = "";
     const li = document.createElement("li");
     li.innerText = connectedUsers;
     usersList.appendChild(li);
