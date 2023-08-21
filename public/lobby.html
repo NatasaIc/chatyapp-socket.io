@@ -7,10 +7,9 @@
   </head>
   <body>
     <h1>Lobby</h1>
-
-    <button id="join">Gå med i rum 123</button>
-    <button id="leave">Lämna rum 123</button>
-    <ul id="listOfMessage"></ul>
+    <ul id="welcomeMessage"></ul>
+    <input type="text" placeholder="Skapa nytt rum" />
+    <button id="join">Skapa</button>
 
     <!-- <button id="start">Start chat</button> // ta bort 
     
@@ -21,6 +20,6 @@
 
     -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js" defer></script>
+    <script src="lobby.js" defer></script>
   </body>
 </html>

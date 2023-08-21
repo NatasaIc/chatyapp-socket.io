@@ -25,8 +25,8 @@ io.on("connection", (socket) => {
   // Listen for the "user_connected" event
   socket.on("user_connected", (user) => {
     username = user; // Store the username
-    // Broadcast the user information to other users in the room
-    socket.broadcast.emit("user_information_to_other_in_room", username);
+    // Broadcast the user information to other users in the lobby
+    socket.broadcast.emit("user_information_to_other_in_lobby", username);
     // Send a welcome message to the new user
     socket.emit("message_to_new_user", username);
   });
@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
   socket.on("join_room", (room) => {
     // Join the specified room
     socket.join(room);
+    socket.broadcast.emit("user_information_to_other_in_room", username);
   });
 
   // Listen for the "leave_room" event
