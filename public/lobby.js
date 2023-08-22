@@ -25,8 +25,6 @@ if (params.username) {
 
 // Function to initialize the Chatty app
 const initChatty = () => {
-  socket.connect();
-
   socket.on("update_users_list", (connectedUsers) => {
     usersList.innerHTML = "";
     const li = document.createElement("li");
@@ -50,13 +48,13 @@ const initChatty = () => {
     displayMessage(`User ${username} disconnected`);
   });
 
-   // skapar nytt rum // just nu bara det som sker i lobbyn 
+  // skapar nytt rum // just nu bara det som sker i lobbyn
   const createRoom = () => {
-    const roomName = createRoomInput.value; 
+    const roomName = createRoomInput.value;
     console.log(roomName);
     socket.emit("create_room", roomName);
     location.replace(`/room?room=${encodeURIComponent(roomName)}`);
-  }
+  };
 
   socket.on("update_rooms_list", (listOfRooms) => {
     const li = document.createElement("li");
@@ -64,13 +62,10 @@ const initChatty = () => {
       li.innerText = room;
       roomsList.appendChild(li);
     });
-  })
+  });
 
-  // skapar nytt rum // just nu bara det som sker i lobbyn 
+  // skapar nytt rum // just nu bara det som sker i lobbyn
   createRoomBtn.addEventListener("click", createRoom);
 };
 
 initChatty(); // Call the initialization function
-
-
-

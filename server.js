@@ -28,6 +28,12 @@ app.get("/room", (req, res) => {
 // When a new user connects
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
+
+  socket.on("user_connected_to_server", (userTest) => {
+    socket.data.username = userTest;
+    console.log("Hej", io.sockets.data);
+  });
+
   let username; // Declare a variable to store the username
   // Listen for the "user_connected" event
   socket.on("user_connected", (user) => {
