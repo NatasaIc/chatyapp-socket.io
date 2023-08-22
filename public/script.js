@@ -2,7 +2,7 @@
 const socket = io({ autoConnect: false });
 
 // Skapa en anslutning till det delade chatt-namespace
-const chatNamespace = io('/');
+// const chatNamespace = io('/');
 
 // Hitta knappen och input-elementet
 const startBtn = document.getElementById("createUsernameButton");

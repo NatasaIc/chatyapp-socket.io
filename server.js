@@ -77,7 +77,7 @@ chatNamespace.on("connection", (socket) => {
   // });
 
   // Listen for the "disconnect" event // detta ska alltså inte ske när vi byter html 
-  socket.on("disconnect", () => {
+  chatNamespace.on("disconnect", () => {
     console.log("User disconnected: ", socket.id);
     // if (username) {
     //   const index = connectedUsers.indexOf(username);
