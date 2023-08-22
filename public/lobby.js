@@ -1,6 +1,5 @@
 // här har vi INTE fixat till det än med chatNamespace // - ska fixas
 
-
 const socket = io({ autoConnect: false });
 const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
