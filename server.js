@@ -21,6 +21,10 @@ app.get("/lobby", (req, res) => {
   res.sendFile(__dirname + "/public/lobby.html");
 });
 
+app.get("/room", (req, res) => {
+  res.sendFile(__dirname + "/public/room.html");
+});
+
 // When a new user connects
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
@@ -36,11 +40,14 @@ io.on("connection", (socket) => {
     socket.emit("message_to_new_user", username);
   });
 
-
   socket.on("create_room", (room) => {
+    socket.join(room);
+    io.to(room).emit("join_new_room", room, username);
+
+    console.log(io.sockets.adapter.rooms);
+
     createdRooms.push(room).toLocaleString;
     io.emit("update_rooms_list", createdRooms);
-
 
     // // Join the specified room
     // socket.join(room);
@@ -49,17 +56,17 @@ io.on("connection", (socket) => {
 
   io.emit("update_rooms_list", createdRooms);
 
-  socket.on("join_room", (room) => {
-    // Join the specified room
-    socket.join(room);
-    socket.broadcast.emit("user_information_to_other_in_room", username);
-  });
+  // socket.on("join_room", (room) => {
+  //   // Join the specified room
+  //   socket.join(room);
+  //   socket.broadcast.emit("user_information_to_other_in_room", username);
+  // });
 
-  // Listen or the "leave_room" event
-  socket.on("leave_room", (room) => {
-    // Leave the specified room
-    socket.leave(room);
-  });
+  // // Listen or the "leave_room" event
+  // socket.on("leave_room", (room) => {
+  //   // Leave the specified room
+  //   socket.leave(room);
+  // });
 
   // Listen for the "disconnect" event
   socket.on("disconnect", () => {

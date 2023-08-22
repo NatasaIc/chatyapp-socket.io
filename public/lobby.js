@@ -55,6 +55,7 @@ const initChatty = () => {
     const roomName = createRoomInput.value; 
     console.log(roomName);
     socket.emit("create_room", roomName);
+    location.replace(`/room?room=${encodeURIComponent(roomName)}`);
   }
 
   socket.on("update_rooms_list", (listOfRooms) => {
@@ -70,3 +71,6 @@ const initChatty = () => {
 };
 
 initChatty(); // Call the initialization function
+
+
+
