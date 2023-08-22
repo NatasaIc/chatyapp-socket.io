@@ -28,10 +28,10 @@ app.get("/room", (req, res) => {
 // When a new user connects
 io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
-
-  socket.on("user_connected_to_server", (userTest) => {
-    socket.data.username = userTest;
-    console.log("Hej", io.sockets.data);
+  
+  socket.on("user_connected_to_server", (username) => {
+    socket.data.username = username;
+    console.log(`A new user connected: ${socket.data.username}`);
   });
 
   let username; // Declare a variable to store the username
@@ -74,7 +74,7 @@ io.on("connection", (socket) => {
   //   socket.leave(room);
   // });
 
-  // Listen for the "disconnect" event
+  // Listen for the "disconnect" event // detta ska alltså inte ske när vi byter html 
   socket.on("disconnect", () => {
     console.log("User disconnected: ", socket.id);
     if (username) {
@@ -85,6 +85,9 @@ io.on("connection", (socket) => {
     // Emit the "user_disconnected" event with the username
     socket.broadcast.emit("user_disconnected", username); // Broadcast the username
   });
+
+  console.log(io.sockets.adapter.rooms);
+
 });
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));

@@ -1,4 +1,5 @@
-const socket = io({ autoConnect: false });
+// const socket = io({ autoConnect: false });
+const socket = io();
 const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
 const welcomeMessage = document.getElementById("welcomeMessage");
