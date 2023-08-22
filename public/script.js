@@ -9,3 +9,6 @@ startBtn.addEventListener("click", function () {
 function redirectTo(username) {
   location.replace(`/lobby?username=${encodeURIComponent(username)}`);
 }
+
+// här behöver vi alltså göra connection och lägga in användarnamnet på socket.data - så vi senare 
+// vi behöver ändra alla url:er 
