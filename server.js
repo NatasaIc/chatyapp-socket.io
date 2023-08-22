@@ -7,6 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const chatNamespace = io.of('/'); 
+
 let connectedUsers = [];
 
 let createdRooms = [];
@@ -26,7 +28,7 @@ app.get("/room", (req, res) => {
 });
 
 // When a new user connects
-io.on("connection", (socket) => {
+chatNamespace.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
   
   socket.on("user_connected_to_server", (username) => {
@@ -40,7 +42,7 @@ io.on("connection", (socket) => {
     username = user; // Store the username
     connectedUsers.push(username).toLocaleString;
     // Broadcast the user information to other users in the lobby
-    io.emit("update_users_list", connectedUsers);
+    chatNamespace.emit("update_users_list", connectedUsers);
     socket.broadcast.emit("user_information_to_other_in_lobby", username);
     // Send a welcome message to the new user
     socket.emit("message_to_new_user", username);
@@ -48,19 +50,19 @@ io.on("connection", (socket) => {
 
   socket.on("create_room", (room) => {
     socket.join(room);
-    io.to(room).emit("join_new_room", room, username);
+    chatNamespace.to(room).emit("join_new_room", room, username);
 
     console.log(io.sockets.adapter.rooms);
 
     createdRooms.push(room).toLocaleString;
-    io.emit("update_rooms_list", createdRooms);
+    chatNamespace.emit("update_rooms_list", createdRooms);
 
     // // Join the specified room
     // socket.join(room);
     // socket.broadcast.emit("user_information_to_other_in_room", username);
   });
 
-  io.emit("update_rooms_list", createdRooms);
+  chatNamespace.emit("update_rooms_list", createdRooms);
 
   // socket.on("join_room", (room) => {
   //   // Join the specified room
@@ -77,13 +79,13 @@ io.on("connection", (socket) => {
   // Listen for the "disconnect" event // detta ska alltså inte ske när vi byter html 
   socket.on("disconnect", () => {
     console.log("User disconnected: ", socket.id);
-    if (username) {
-      const index = connectedUsers.indexOf(username);
-      if (index !== -1) connectedUsers.splice(index, 1);
-      io.emit("update_users_list", connectedUsers);
-    }
-    // Emit the "user_disconnected" event with the username
-    socket.broadcast.emit("user_disconnected", username); // Broadcast the username
+    // if (username) {
+    //   const index = connectedUsers.indexOf(username);
+    //   if (index !== -1) connectedUsers.splice(index, 1);
+    //   io.emit("update_users_list", connectedUsers);
+    // }
+    // // Emit the "user_disconnected" event with the username
+    // socket.broadcast.emit("user_disconnected", username); // Broadcast the username
   });
 
   console.log(io.sockets.adapter.rooms);

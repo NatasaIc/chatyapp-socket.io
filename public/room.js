@@ -1,3 +1,5 @@
+// här har vi INTE fixat till det än med chatNamespace // - ska fixas
+
 const socket = io ();
 const leaveBtn = document.getElementById("leaveBtn");
 const chattInput = document.getElementById("chattInput");
