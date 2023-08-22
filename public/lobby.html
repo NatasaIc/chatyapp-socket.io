@@ -4,17 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <h1>Lobby</h1>
-    
+
     <ul id="welcomeMessage"></ul>
     <ul id="usersList"></ul>
     <input type="text" placeholder="Skapa nytt rum" id="createRoomInput"/>
     <button id="createRoom">Skapa</button>
     <ul id="roomsList">Rum</ul>
 
-    <script src="/socket.io/socket.io.js"></script>
+   
     <script src="lobby.js" defer></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const socket = io({ autoConnect: false });
+const socket = io({ autoConnect: false }); // den ska inte vara här, ska gå att lösa på något annat sätt
 
 const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
