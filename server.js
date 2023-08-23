@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
 
     io.emit("update_rooms_list", createdRooms);
 
-    socket.emit("message_to_new_user", user);
+    // socket.emit("message_to_new_user", username);
 
     socket.emit("update_users_list", connectedUsers);
   });
