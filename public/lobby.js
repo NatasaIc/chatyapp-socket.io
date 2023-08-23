@@ -43,9 +43,9 @@ const initChatty = () => {
   });
 
   const createRoom = () => {
-    const roomName = createRoomInput.value;
-    socket.emit("create-room", roomName);
-    location.replace(`/room?room=${encodeURIComponent(roomName)}`); 
+    const room = createRoomInput.value;
+    socket.emit("create-room", room);
+    location.replace(`/room?room=${encodeURIComponent(room)}`); // måste vi väl ändra sen
   };
 
   createRoomBtn.addEventListener("click", createRoom);

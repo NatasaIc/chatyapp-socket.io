@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
 
     io.of("/").adapter.on("create-room", (room) => {
       console.log(`room ${room} was created`);
-      socket.to(room).emit("create_and_joined_room");
+      socket.join(room);
     });
     
     // // måste skapa senare (när man klickar på rummet i listan)
