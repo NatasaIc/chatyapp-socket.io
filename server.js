@@ -27,7 +27,7 @@ app.get("/room", (req, res) => {
 });
 
 // When a new user connects
-chatNamespace.on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log(`A new user connected: ${socket.id}`);
 
   socket.on("user_connected_to_server", (username) => {
@@ -36,14 +36,12 @@ chatNamespace.on("connection", (socket) => {
 
     console.log(`A new user connected: ${username}`);
     console.log(io.sockets.adapter.rooms);
-
-    let username; // Declare a variable to store the username
     // Listen for the "user_connected" event
     socket.on("user_connected", (user) => {
       username = user; // Store the username
       connectedUsers.push(username).toLocaleString;
       // Broadcast the user information to other users in the lobby
-      chatNamespace.emit("update_users_list", connectedUsers);
+      io.emit("update_users_list", connectedUsers);
       socket.broadcast.emit("user_information_to_other_in_lobby", username);
       // Send a welcome message to the new user
       socket.emit("message_to_new_user", username);
@@ -51,19 +49,19 @@ chatNamespace.on("connection", (socket) => {
 
     socket.on("create_room", (room) => {
       socket.join(room);
-      chatNamespace.to(room).emit("join_new_room", room, username);
+      io.to(room).emit("join_new_room", room, username);
 
       console.log(io.sockets.adapter.rooms);
 
       createdRooms.push(room).toLocaleString;
-      chatNamespace.emit("update_rooms_list", createdRooms);
+      io.emit("update_rooms_list", createdRooms);
 
       // // Join the specified room
       // socket.join(room);
       // socket.broadcast.emit("user_information_to_other_in_room", username);
     });
 
-    chatNamespace.emit("update_rooms_list", createdRooms);
+    io.emit("update_rooms_list", createdRooms);
 
     socket.emit("message_to_new_user", user);
 

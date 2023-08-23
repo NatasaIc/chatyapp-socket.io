@@ -27,17 +27,17 @@ startBtn.addEventListener("click", function () {
   });
 });
 
-function loadLobbyPage() {
-  // Fetch the HTML content of the lobby page
-  fetch("/lobby")
-    .then((response) => response.text())
-    .then((html) => {
-      // Update the DOM with the fetched content
-      document.body.innerHTML = html;
-      // Initialize the lobby functionality after updating the DOM
-      initChatty();
-    })
-    .catch((error) => {
-      console.error("Error fetching lobby page:", error);
-    });
-}
+// function loadLobbyPage() {
+//   // Fetch the HTML content of the lobby page
+//   fetch("/lobby")
+//     .then((response) => response.text())
+//     .then((html) => {
+//       // Update the DOM with the fetched content
+//       document.body.innerHTML = html;
+//       // Initialize the lobby functionality after updating the DOM
+//       initChatty();
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching lobby page:", error);
+//     });
+// }
