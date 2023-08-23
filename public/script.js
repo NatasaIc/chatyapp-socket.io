@@ -1,9 +1,6 @@
 // Skapa Socket.IO-anslutning med autoConnect: false
 const socket = io({ autoConnect: false });
 
-// Skapa en anslutning till det delade chatt-namespace
-// const chatNamespace = io('/');
-
 // Hitta knappen och input-elementet
 const startBtn = document.getElementById("createUsernameButton");
 const input = document.getElementById("createUsernameInput");
