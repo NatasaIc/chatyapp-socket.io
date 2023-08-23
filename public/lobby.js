@@ -16,14 +16,14 @@ const initChatty = () => {
     displayMessage(`Welcome to the lobby, ${storedUsername}`);
   }
 
-  socket.on("update_users_list", (connectedUsers) => {
-    usersList.innerHTML = ""; // Clear the previous list
-    connectedUsers.forEach((username) => {
-      const li = document.createElement("li");
-      li.innerText = username;
-      usersList.appendChild(li);
-    });
-  });
+  // socket.on("update_users_list", (connectedUsers) => {
+  //   usersList.innerHTML = ""; // Clear the previous list
+  //   connectedUsers.forEach((username) => {
+  //     const li = document.createElement("li");
+  //     li.innerText = username;
+  //     usersList.appendChild(li);
+  //   });
+  // });
 
   socket.on("message_to_new_user", (username) => {
     displayMessage(`Welcome to the lobby, ${username}`);
@@ -44,8 +44,8 @@ const initChatty = () => {
 
   const createRoom = () => {
     const roomName = createRoomInput.value;
-    socket.emit("create_room", roomName);
-    location.replace(`/room?room=${encodeURIComponent(roomName)}`);
+    socket.emit("create-room", roomName);
+    location.replace(`/room?room=${encodeURIComponent(roomName)}`); 
   };
 
   createRoomBtn.addEventListener("click", createRoom);
