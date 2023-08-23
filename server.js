@@ -26,7 +26,10 @@ app.get("/room", (req, res) => {
   res.sendFile(__dirname + "/public/room.html");
 });
 
-io.on("connection", (socket) => {
+// When a new user connects
+chatNamespace.on("connection", (socket) => {
+  console.log(`A new user connected: ${socket.id}`);
+
   socket.on("user_connected_to_server", (username) => {
     socket.data.username = username;
     socketToUsername[socket.id] = username;
@@ -34,27 +37,33 @@ io.on("connection", (socket) => {
     console.log(`A new user connected: ${username}`);
     console.log(io.sockets.adapter.rooms);
 
-    // Inform other  in the lobby about the new user
-    socket.broadcast.emit(
-      "user_information_to_other_in_lobby",
-      socket.data.username
-    );
+    let username; // Declare a variable to store the username
+    // Listen for the "user_connected" event
+    socket.on("user_connected", (user) => {
+      username = user; // Store the username
+      connectedUsers.push(username).toLocaleString;
+      // Broadcast the user information to other users in the lobby
+      chatNamespace.emit("update_users_list", connectedUsers);
+      socket.broadcast.emit("user_information_to_other_in_lobby", username);
+      // Send a welcome message to the new user
+      socket.emit("message_to_new_user", username);
+    });
 
     socket.on("create_room", (room) => {
       socket.join(room);
-      io.to(room).emit("join_new_room", room, socket.data.username);
+      chatNamespace.to(room).emit("join_new_room", room, username);
 
       console.log(io.sockets.adapter.rooms);
 
-      createdRooms.push(room);
-      io.emit("update_rooms_list", createdRooms);
+      createdRooms.push(room).toLocaleString;
+      chatNamespace.emit("update_rooms_list", createdRooms);
+
+      // // Join the specified room
+      // socket.join(room);
+      // socket.broadcast.emit("user_information_to_other_in_room", username);
     });
-  });
 
-  socket.on("user_connected", (user) => {
-    socket.data.username = user;
-
-    connectedUsers.push(user);
+    chatNamespace.emit("update_rooms_list", createdRooms);
 
     socket.emit("message_to_new_user", user);
 
