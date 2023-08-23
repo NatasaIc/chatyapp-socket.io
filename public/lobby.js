@@ -1,4 +1,7 @@
-const socket = io({ autoConnect: false }); // den ska inte vara här, ska gå att lösa på något annat sätt
+const storedUsername = sessionStorage.getItem("username");
+const storedSocketId = localStorage.getItem("socketId");
+
+const socket = io();
 
 const joinBtn = document.getElementById("join");
 const leaveBtn = document.getElementById("leave");
@@ -8,29 +11,23 @@ const roomsList = document.getElementById("roomsList");
 const createRoomBtn = document.getElementById("createRoom");
 const createRoomInput = document.getElementById("createRoomInput");
 
-const displayMessage = (message) => {
-  const li = document.createElement("li");
-  li.innerText = message;
-  welcomeMessage.appendChild(li);
-};
-
-// const urlSearchParams = new URLSearchParams(window.location.search);
-// const params = Object.fromEntries(urlSearchParams.entries());
-
-// if (params.username) {
-//   const username = decodeURIComponent(params.username);
-//   displayMessage(`Welcome to Chatty, ${username}`);
-// }
-
 const initChatty = () => {
+  if (storedUsername) {
+    displayMessage(`Welcome to the lobby, ${storedUsername}`);
+  }
+
   socket.on("update_users_list", (connectedUsers) => {
-    usersList.innerHTML = "";
-    const li = document.createElement("li");
-    li.innerText = connectedUsers;
-    usersList.appendChild(li);
+    usersList.innerHTML = ""; // Clear the previous list
+    connectedUsers.forEach((username) => {
+      const li = document.createElement("li");
+      li.innerText = username;
+      usersList.appendChild(li);
+    });
   });
 
-  // socket.emit("user_connected", params.username);
+  socket.on("message_to_new_user", (username) => {
+    displayMessage(`Welcome to the lobby, ${username}`);
+  });
 
   socket.on("user_information_to_other_in_lobby", (username) => {
     displayMessage(`${username} joined the lobby`);
@@ -41,22 +38,30 @@ const initChatty = () => {
     displayMessage(`User ${username} disconnected`);
   });
 
+  socket.on("update_rooms_list", (listOfRooms) => {
+    displayRoomsList(listOfRooms);
+  });
+
   const createRoom = () => {
     const roomName = createRoomInput.value;
     socket.emit("create_room", roomName);
     location.replace(`/room?room=${encodeURIComponent(roomName)}`);
   };
 
-  // socket.on("update_rooms_list", (listOfRooms) => {
-  //   roomsList.innerHTML = "";
-  //   listOfRooms.forEach((room) => {
-  //     const li = document.createElement("li");
-  //     li.innerText = room;
-  //     roomsList.appendChild(li);
-  //   });
-  // });
-
   createRoomBtn.addEventListener("click", createRoom);
 };
 
-initChatty();
+// Define the displayMessage function
+const displayMessage = (message) => {
+  const li = document.createElement("li");
+  li.innerText = message;
+  welcomeMessage.appendChild(li);
+};
+
+socket.on("connect", () => {
+  if (storedUsername) {
+    socket.emit("user_connected_to_server", storedUsername);
+  }
+
+  initChatty();
+});

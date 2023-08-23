@@ -1,9 +1,6 @@
 // Skapa Socket.IO-anslutning med autoConnect: false
 const socket = io({ autoConnect: false });
 
-// Skapa en anslutning till det delade chatt-namespace
-// const chatNamespace = io('/');
-
 // Hitta knappen och input-elementet
 const startBtn = document.getElementById("createUsernameButton");
 const input = document.getElementById("createUsernameInput");
@@ -15,19 +12,32 @@ startBtn.addEventListener("click", function () {
   // Anslut till Socket.IO-servern
   socket.connect();
 
-  // Lyssna på anslutningseventet
-  socket.on('connect', () => {
-    console.log('Ansluten till Socket.IO-servern');
-
-    // Skicka användarnamn till servern
+  // client-side
+  socket.on("connect", () => {
     socket.emit("user_connected_to_server", username);
 
-    // Gå till lobby-sidan efter att användarnamnet har skickats
+    // Save username in sessionStorage
+    sessionStorage.setItem("username", username);
+
     location.replace(`/lobby`);
   });
 
-  // Om det är problem att ansluta
-  socket.on('connect_error', (error) => {
-    console.error('Anslutningsfel:', error);
+  socket.on("connect_error", (error) => {
+    console.error("Anslutningsfel:", error);
   });
 });
+
+function loadLobbyPage() {
+  // Fetch the HTML content of the lobby page
+  fetch("/lobby")
+    .then((response) => response.text())
+    .then((html) => {
+      // Update the DOM with the fetched content
+      document.body.innerHTML = html;
+      // Initialize the lobby functionality after updating the DOM
+      initChatty();
+    })
+    .catch((error) => {
+      console.error("Error fetching lobby page:", error);
+    });
+}
