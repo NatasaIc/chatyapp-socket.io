@@ -1,5 +1,5 @@
 const storedUsername = sessionStorage.getItem("username");
-const storedSocketId = localStorage.getItem("socketId");
+const storedSocketId = sessionStorage.getItem("socketId");
 
 const socket = io();
 
@@ -24,6 +24,7 @@ const initChatty = () => {
   //     usersList.appendChild(li);
   //   });
   // });
+  // sessionStorage.setItem("room", room);
 
   socket.on("message_to_new_user", (username) => {
     displayMessage(`Welcome to the lobby, ${username}`);
@@ -45,7 +46,7 @@ const initChatty = () => {
   const createRoom = () => {
     const room = createRoomInput.value;
     socket.emit("create-room", room);
-    location.replace(`/room?room=${encodeURIComponent(room)}`); // måste vi väl ändra sen
+    location.replace("/room"); // måste vi väl ändra sen
   };
 
   createRoomBtn.addEventListener("click", createRoom);

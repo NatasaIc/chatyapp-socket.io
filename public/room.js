@@ -1,32 +1,32 @@
-// här har vi INTE fixat till det än med chatNamespace // - ska fixas
+const storedUsername = sessionStorage.getItem("username");
+const storedSocketId = sessionStorage.getItem("socketId");
 
-const socket = io ();
+const socket = io();
+
 const leaveBtn = document.getElementById("leaveBtn");
 const chattInput = document.getElementById("chattInput");
 const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
 
-// ha en lista sen med alla som är i rummet (men ska väl skapas i servern?)
-
-const searchParams = new URLSearchParams(window.location.search);
-const paramsRoom = Object.fromEntries(searchParams.entries());
-
-// chatt 
+// chatt
 const displayMessage = (message) => {
-    const li = document.createElement("li");
-    li.innerText = message;
-    chatt.appendChild(li);
-  };
+  const li = document.createElement("li");
+  li.innerText = message;
+  chatt.appendChild(li);
+};
 
-if (paramsRoom.room) {
-    const room = decodeURIComponent(paramsRoom.room);
-    displayMessage(`Välkommen till ${room}`)
+if (storedUsername) {
+  displayMessage(`Welcome to the room, ${storedUsername}`);
 }
+socket.on("join_new_room", (room, storedUsername) => {
+  console.log(username);
+  displayMessage(`${storedUsername} joined ${room}`);
+  // här borde vi väl skicka username till listan med användare som är i rummet
+});
 
-socket.on("join_new_room", (room, username) => {
-    console.log(username);
-    displayMessage(`${username} joined ${room}`);
-    // här borde vi väl skicka username till listan med användare som är i rummet 
-})
+socket.on("user_information_to_other_in_room", (room, username) => {
+  console.log("Rum", room);
+  console.log(username);
+});
 
 // vi måste komma ihåg att rummet försvinner när listan på användare är tom

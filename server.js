@@ -47,25 +47,26 @@ io.on("connection", (socket) => {
       socket.emit("message_to_new_user", username);
     });
 
-    // socket.on("create_room", (room) => {
+    socket.on("create-room", (room) => {
+      socket.join(room);
+      io.to(room).emit("join_new_room", room, username);
+
+      createdRooms.push(room);
+      io.emit("update_rooms_list", createdRooms);
+
+      // Join the specified room
+      io.emit("user_information_to_other_in_room", room, username);
+      console.log("test123", room);
+      console.log("user", username);
+      socket.join(room);
+      console.log("Alla rum", io.sockets.adapter.rooms);
+    });
+
+    // io.of("/room").on("create-room", (room) => {
     //   socket.join(room);
-    //   io.to(room).emit("join_new_room", room, username);
-
-    //   console.log(io.sockets.adapter.rooms);
-
-    //   createdRooms.push(room).toLocaleString;
-    //   io.emit("update_rooms_list", createdRooms);
-
-    //   // // Join the specified room
-    //   // socket.join(room);
-    //   // socket.broadcast.emit("user_information_to_other_in_room", username);
+    //   console.log(`room ${room} was created`);
     // });
 
-    io.of("/").adapter.on("create-room", (room) => {
-      console.log(`room ${room} was created`);
-      socket.join(room);
-    });
-    
     // // måste skapa senare (när man klickar på rummet i listan)
     // io.of("/").adapter.on("join-room", (room, id) => {
     //   console.log(`socket ${id} has joined room ${room}`);
