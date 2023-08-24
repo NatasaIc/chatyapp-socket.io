@@ -7,6 +7,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+// Initialize arrays to store users and rooms
+const connectedUsers = [];
+const createdRooms = [];
+console.log(createdRooms);
+
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
@@ -25,31 +30,32 @@ io.on("connection", (socket) => {
   // Listen for the "user_connected" event
   socket.on("user_connected", (user) => {
     username = user; // Store the username
+    connectedUsers.push(username);
+    io.emit("update_users_list", connectedUsers);
     console.log(`User connected ${username}`);
     console.log(io.sockets.adapter.rooms);
-    // Broadcast the user information to other users in the lobby
-    io.emit("user_information_to_other_in_lobby", username);
-    // Send a welcome message to the new user
   });
 
-  // Listen for the "join_room" event
-  socket.on("join_room", (room) => {
+  socket.on("create_room", (room) => {
+    room = roomName;
     // Join the specified room
-    socket.join(room);
-    socket.broadcast.emit("user_information_to_other_in_room", username);
-  });
-
-  // Listen for the "leave_room" event
-  socket.on("leave_room", (room) => {
-    // Leave the specified room
-    socket.leave(room);
+    createdRooms.push(roomName);
+    io.emit("update_rooms_list", createdRooms);
+    socket.join(roomName);
+    socket.broadcast.emit("info_new_room", username);
   });
 
   // Listen for the "disconnect" event
   socket.on("disconnect", () => {
     console.log("User disconnected: ", username);
+
+    if (username) {
+      const index = connectedUsers.indexOf(username);
+      if (index !== -1) connectedUsers.splice(index, 1);
+      io.emit("update_users_list", connectedUsers);
+    }
     // Emit the "user_disconnected" event with the username
-    socket.broadcast.emit("user_disconnected", username); // Broadcast the username
+    socket.emit("user_disconnected", username); // Broadcast the username
   });
 });
 
