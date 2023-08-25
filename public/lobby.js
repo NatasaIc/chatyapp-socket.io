@@ -1,5 +1,6 @@
 const storedUsername = sessionStorage.getItem("username");
 const storedSocketId = sessionStorage.getItem("socketId");
+const storedRoomName = sessionStorage.getItem("roomName");
 
 const socket = io();
 
@@ -16,43 +17,49 @@ const initChatty = () => {
     displayMessage(`Welcome to the lobby, ${storedUsername}`);
   }
 
-  // socket.on("update_users_list", (connectedUsers) => {
-  //   usersList.innerHTML = ""; // Clear the previous list
-  //   connectedUsers.forEach((username) => {
-  //     const li = document.createElement("li");
-  //     li.innerText = username;
-  //     usersList.appendChild(li);
-  //   });
-  // });
-  // sessionStorage.setItem("room", room);
-
-  socket.on("message_to_new_user", (username) => {
-    displayMessage(`Welcome to the lobby, ${username}`);
-  });
-
-  socket.on("user_information_to_other_in_lobby", (username) => {
-    displayMessage(`${username} joined the lobby`);
-  });
-
   socket.on("user_disconnected", (username) => {
     console.log(`User disconnected: ${username}`);
     displayMessage(`User ${username} disconnected`);
   });
 
-  socket.on("update_rooms_list", (listOfRooms) => {
-    displayRoomsList(listOfRooms);
+socket.on("update_rooms_list", (updatedListOfRooms) => {
+    roomsList.innerHTML = ""; // Rensa den befintliga listan
+    updatedListOfRooms.forEach((room) => {
+      const li = document.createElement("li");
+      li.innerText = room;
+      roomsList.appendChild(li);
+  
+      li.addEventListener("click", (event) => {
+        const selectedRoom = event.target.innerText;
+        if (selectedRoom) {
+          joinRoom(selectedRoom);
+        }
+      });
+    });
   });
+  
+  const joinRoom = (roomName) => {
+    socket.emit("join-room", roomName); // Anslut till det angivna rummet
+    sessionStorage.setItem("roomName", roomName);
+
+    location.replace(`/room`); // Byt till "rumsidan"
+  };
 
   const createRoom = () => {
     const room = createRoomInput.value;
     socket.emit("create-room", room);
-    location.replace("/room"); // måste vi väl ändra sen
+    joinRoom(room); 
   };
 
   createRoomBtn.addEventListener("click", createRoom);
 };
 
-// Define the displayMessage function
+socket.on("update_users_list", (updatedUsersList) => {
+  console.log(updatedUsersList); 
+
+  // vi måste ta ut de när de disconnectar NÄSTA SAK ATT FIXA!
+});
+
 const displayMessage = (message) => {
   const li = document.createElement("li");
   li.innerText = message;
