@@ -53,13 +53,14 @@ io.on("connection", (socket) => {
 
       createdRooms.push(room);
       io.emit("update_rooms_list", createdRooms);
-
       // Join the specified room
       io.emit("user_information_to_other_in_room", room, username);
-      console.log("test123", room);
-      console.log("user", username);
       socket.join(room);
       console.log("Alla rum", io.sockets.adapter.rooms);
+    });
+
+    socket.on("join_existing_room", (room, username) => {
+      socket.join(username).on(room);
     });
 
     // io.of("/room").on("create-room", (room) => {
@@ -75,7 +76,7 @@ io.on("connection", (socket) => {
     // io.emit("update_rooms_list", createdRooms);
 
     // socket.emit("message_to_new_user", username);
-
+    socket.emit("update_rooms_list", createdRooms);
     socket.emit("update_users_list", connectedUsers);
   });
 

@@ -40,13 +40,25 @@ const initChatty = () => {
   });
 
   socket.on("update_rooms_list", (listOfRooms) => {
-    displayRoomsList(listOfRooms);
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    li.appendChild(a);
+    listOfRooms.forEach((room) => {
+      a.setAttribute("href", `/room?room=${encodeURIComponent(room)}`);
+      a.innerText = room;
+      roomsList.appendChild(li);
+      li.addEventListener("click", joinRoom);
+    });
   });
+
+  const joinRoom = () => {
+    socket.emit("join_existing_room", storedUsername);
+  };
 
   const createRoom = () => {
     const room = createRoomInput.value;
     socket.emit("create-room", room);
-    location.replace("/room"); // måste vi väl ändra sen
+    location.replace(`/room?room=${encodeURIComponent(room)}`); // måste vi väl ändra sen
   };
 
   createRoomBtn.addEventListener("click", createRoom);
