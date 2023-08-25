@@ -34,6 +34,14 @@ io.on("connection", (socket) => {
     socket.data.username = username;
     socketToUsername[socket.id] = username;
 
+    app.get("/getSocketIdByUsername/:username", (req, res) => {
+      const username = req.params.username;
+      const socketId = Object.keys(socketToUsername).find(
+        (id) => socketToUsername[id] === username
+      );
+      res.json({ socketId });
+    });
+
     console.log(`A new user connected: ${username}`);
     console.log(io.sockets.adapter.rooms);
     // Listen for the "user_connected" event
@@ -54,13 +62,13 @@ io.on("connection", (socket) => {
       createdRooms.push(room);
       io.emit("update_rooms_list", createdRooms);
       // Join the specified room
-      io.emit("user_information_to_other_in_room", room, username);
       socket.join(room);
       console.log("Alla rum", io.sockets.adapter.rooms);
     });
 
     socket.on("join_existing_room", (room, username) => {
-      socket.join(username).on(room);
+      socket.join(room, username);
+      io.emit("user_information_to_other_in_room", room, username);
     });
 
     // io.of("/room").on("create-room", (room) => {

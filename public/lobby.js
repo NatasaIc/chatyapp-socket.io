@@ -44,7 +44,7 @@ const initChatty = () => {
     const a = document.createElement("a");
     li.appendChild(a);
     listOfRooms.forEach((room) => {
-      a.setAttribute("href", `/room?room=${encodeURIComponent(room)}`);
+      a.setAttribute("href", `/room`);
       a.innerText = room;
       roomsList.appendChild(li);
       li.addEventListener("click", joinRoom);
@@ -58,7 +58,6 @@ const initChatty = () => {
   const createRoom = () => {
     const room = createRoomInput.value;
     socket.emit("create-room", room);
-    location.replace(`/room?room=${encodeURIComponent(room)}`); // måste vi väl ändra sen
   };
 
   createRoomBtn.addEventListener("click", createRoom);
