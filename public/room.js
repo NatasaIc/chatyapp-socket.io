@@ -7,6 +7,7 @@ const leaveBtn = document.getElementById("leaveBtn");
 const chattInput = document.getElementById("chattInput");
 const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
+const usersList = document.getElementById("users-list");
 
 // chatt
 const displayMessage = (message) => {

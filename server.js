@@ -11,6 +11,7 @@ let connectedUsers = [];
 let createdRooms = [];
 
 const socketToUsername = {};
+const rooms = {};
 
 app.use(express.static("public"));
 
@@ -71,19 +72,6 @@ io.on("connection", (socket) => {
       io.emit("user_information_to_other_in_room", room, username);
     });
 
-    // io.of("/room").on("create-room", (room) => {
-    //   socket.join(room);
-    //   console.log(`room ${room} was created`);
-    // });
-
-    // // måste skapa senare (när man klickar på rummet i listan)
-    // io.of("/").adapter.on("join-room", (room, id) => {
-    //   console.log(`socket ${id} has joined room ${room}`);
-    // });
-
-    // io.emit("update_rooms_list", createdRooms);
-
-    // socket.emit("message_to_new_user", username);
     socket.emit("update_rooms_list", createdRooms);
     socket.emit("update_users_list", connectedUsers);
   });

@@ -1,5 +1,6 @@
 const storedUsername = sessionStorage.getItem("username");
 const storedSocketId = sessionStorage.getItem("socketId");
+const storedRoomData = sessionStorage.getItem("currentRoom");
 
 const socket = io();
 
