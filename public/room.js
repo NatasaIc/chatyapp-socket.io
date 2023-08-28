@@ -10,62 +10,77 @@ const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
 const userList = document.getElementById("userList"); // Element för att visa användarlistan
 
-// chatt
-const displayMessage = (message) => {
-  const li = document.createElement("li");
-  li.innerText = message;
-  chatt.appendChild(li);
-};
-
-// Anslut till rummet med det lagrade användarnamnet
+const inRoom = () => {
 if (storedUsername) {
-  displayMessage(`Welcome to ${storedRoomName} ${storedUsername}`);
-  socket.emit("user_connected_to_room", storedUsername);
-}
+    displayMessage(`Welcome to ${storedRoomName} ${storedUsername}`);
+    socket.emit("user_connected_to_room", storedUsername);
+  }
 
 if (storedRoomName) {
-    console.log(storedRoomName);
+    console.log("namn från storage:" + storedRoomName);
+    socket.emit("join-room", storedRoomName);
 }
 
 // Visa när någon ansluter till rummet
 socket.on("join_new_room", (room, username) => {
-  displayMessage(`${username} joined ${room}`);
-});
-
-// Uppdatera användarlistan när användarinformation skickas
-socket.on("update_users_list_in_room", (users) => {
-  updateUserList(users);
-});
-
-// Hantera inkommande meddelanden
-socket.on("incoming_message", (message) => {
-  displayMessage(message);
-});
-
-// Funktion för att skicka meddelanden
-const sendMessage = () => {
-  const message = chattInput.value;
-  socket.emit("send_message", message);
-  displayMessage(`You: ${message}`);
-  chattInput.value = "";
-};
-
-// Lyssna på chattknappen
-chattBtn.addEventListener("click", sendMessage);
-
-// Lyssna på Enter-tangenten i chattinputfältet
-chattInput.addEventListener("keyup", (event) => {
-  if (event.key === "Enter") {
-    sendMessage();
-  }
-});
-
-// Uppdatera användarlistan
-const updateUserList = (users) => {
-  userList.innerHTML = ""; // Rensa användarlistan
-  users.forEach((username) => {
-    const li = document.createElement("li");
-    li.innerText = username;
-    userList.appendChild(li);
+    displayMessage(`${username} joined ${room}`);
   });
+  
+  // Hantera inkommande meddelanden - måste gå igenom 
+  socket.on("incoming_message", (message) => {
+    displayMessage(message);
+  });
+  
+  // Funktion för att skicka meddelanden - måste gå igenom 
+  const sendMessage = () => {
+    const message = chattInput.value;
+    socket.emit("send_message", message);
+    displayMessage(`You: ${message}`);
+    chattInput.value = "";
+  };
+  
+  // Lyssna på chattknappen - måste gå igenom
+  chattBtn.addEventListener("click", sendMessage);
+  
+  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom 
+  chattInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  });
+
+  // Uppdatera användarlistan
+socket.on("update_user_in_roomlist", (usersInRoom) => {
+    console.log("användare: " + usersInRoom);
+
+    userList.innerText = "";
+    usersInRoom.forEach((user) => {
+      const li = document.createElement("li");
+      li.innerText = user;
+      userList.appendChild(li);
+    });
+})
+
 };
+
+// chatt - måste gå igenom 
+const displayMessage = (message) => {
+    const li = document.createElement("li");
+    li.innerText = message;
+    chatt.appendChild(li);
+  };
+
+// Anslut till rummet med det lagrade användarnamnet - måste gå igenom 
+socket.on("connect", () => {
+    if (storedUsername) {
+      socket.emit("user_connected_to_server", storedUsername);
+    }
+  
+    inRoom();
+  });
+
+//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs 
+//   // Rensa upp i sessionStorage när användaren lämnar sidan
+// window.addEventListener("beforeunload", () => {
+//     sessionStorage.removeItem("roomName");
+//   });
