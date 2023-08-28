@@ -55,6 +55,8 @@ io.on("connection", (socket) => {
       // io.emit("update_rooms_list", createdRooms);
     });
 
+    io.emit("update_rooms_list", createdRooms);
+
     socket.on("join-room", (room) => {
       socket.join(room);
       console.log(socket.username + " joinar " + room);
