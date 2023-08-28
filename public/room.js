@@ -12,7 +12,7 @@ const userList = document.getElementById("userList"); // Element för att visa a
 
 const inRoom = () => {
 if (storedUsername) {
-    displayMessage(`Welcome to ${storedRoomName} ${storedUsername}`);
+    displayMessage(`Välkommen till ${storedRoomName} ${storedUsername}`);
     socket.emit("user_connected_to_room", storedUsername);
   }
 
