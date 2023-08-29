@@ -14,7 +14,7 @@ const createRoomInput = document.getElementById("createRoomInput");
 
 const initChatty = () => {
   if (storedUsername) {
-    displayMessage(`Välkommen till Lobbyn ${storedUsername}`);
+    displayMessage(`Välkommen till Chatty ${storedUsername}`);
   }
 
   socket.on("user_disconnected", (username) => {
