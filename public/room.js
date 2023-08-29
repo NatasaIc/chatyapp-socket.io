@@ -74,7 +74,6 @@ const inRoom = () => {
     console.log("användare: " + usersInRoom);
 
     userList.innerText = "";
-    userList.innerText = "Användare i rummet:";
     usersInRoom.forEach((user) => {
       const li = document.createElement("li");
       li.innerText = user;
