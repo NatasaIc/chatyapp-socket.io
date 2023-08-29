@@ -4,6 +4,7 @@ const storedRoomName = sessionStorage.getItem("roomName");
 
 const socket = io();
 
+const h1 = document.getElementById("h1");
 const leaveBtn = document.getElementById("leaveBtn");
 const chattInput = document.getElementById("chattInput");
 const chattBtn = document.getElementById("chattBtn");
@@ -13,6 +14,7 @@ const typingIndicator = document.getElementById("typingIndicator");
 
 const inRoom = () => {
   if (storedUsername) {
+    h1.innerText=`${storedRoomName}`;
     displayMessage(`Välkommen till ${storedRoomName} ${storedUsername}`);
     socket.emit("user_connected_to_room", storedUsername);
   }
