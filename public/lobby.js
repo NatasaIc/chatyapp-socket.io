@@ -60,6 +60,7 @@ const initChatty = () => {
         const selectedRoom = event.target.innerText;
         if (selectedRoom) {
           joinRoom(selectedRoom);
+          displayUsersInRoom(selectedRoom);
         }
       });
     });
