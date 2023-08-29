@@ -11,7 +11,6 @@ const usersList = document.getElementById("usersList");
 const roomsList = document.getElementById("roomsList");
 const createRoomBtn = document.getElementById("createRoom");
 const createRoomInput = document.getElementById("createRoomInput");
-const roomsAndUsersList = document.getElementById("roomsAndUsersList");
 
 const initChatty = () => {
   if (storedUsername) {
@@ -37,6 +36,8 @@ const initChatty = () => {
   
   createRoomBtn.addEventListener("click", createRoom);
   
+  // här är användarna - alla som är connectade - denna kan vi ta bort innan inlämning 
+
   socket.on("update_users_list", (updatedUsersList) => {
     console.log(updatedUsersList);
     usersList.innerText ="";
@@ -47,34 +48,32 @@ const initChatty = () => {
     });
   });
 
-  socket.on("update_rooms_list", (updatedListOfRooms) => {
-    console.log(updatedListOfRooms);
-    roomsList.innerText = ""; // Rensa den befintliga listan
-    updatedListOfRooms.forEach((room) => {
-      const li = document.createElement("li");
-      li.innerText = room;
-      roomsList.appendChild(li);
+  // socket.on("update_rooms_list", (updatedListOfRooms) => {
+  //   console.log(updatedListOfRooms);
+  //   roomsList.innerText = ""; 
+  //   updatedListOfRooms.forEach((room) => {
+  //     const li = document.createElement("li");
+  //     li.innerText = room;
+  //     roomsList.appendChild(li);
   
-      li.addEventListener("click", (event) => {
-        const selectedRoom = event.target.innerText;
-        if (selectedRoom) {
-          joinRoom(selectedRoom);
-        }
-      });
-    });
-  });
-
-  // Här är listan med rum + användare som är i rummet 
+  //     li.addEventListener("click", (event) => {
+  //       const selectedRoom = event.target.innerText;
+  //       if (selectedRoom) {
+  //         joinRoom(selectedRoom);
+  //       }
+  //     });
+  //   });
+  // });
 
   socket.on("update_rooms_with_users_list", (usersInRooms) => {
-    const roomsAndUsersList = document.getElementById("roomsAndUsersList");
-    roomsAndUsersList.innerHTML = "";
+    const roomsList = document.getElementById("roomsList");
+    roomsList.innerHTML = "";
   
     Object.entries(usersInRooms).forEach(([roomName, users]) => {
       if (users.length > 0) {
         const roomItem = document.createElement("li");
         roomItem.textContent = roomName;
-        roomsAndUsersList.appendChild(roomItem);
+        roomsList.appendChild(roomItem);
   
         const userUl = document.createElement("ul");
         users.forEach((user, userIndex) => {
@@ -82,18 +81,18 @@ const initChatty = () => {
           userItem.textContent = `User ${userIndex + 1}: ${user}`;
           userUl.appendChild(userItem);
         });
+
+        roomItem.addEventListener("click", (event) => {
+          const selectedRoom = roomName;
+          if (selectedRoom) {
+            joinRoom(selectedRoom);
+          }
+        });
   
         roomItem.appendChild(userUl);
       }
     });
   });
-  
-  
-  
-  
-  
-  
-
 
 };
 
