@@ -22,10 +22,10 @@ const initChatty = () => {
   });
   
   const joinRoom = (roomName) => {
-    socket.emit("join-room", roomName); // Anslut till det angivna rummet
+    socket.emit("join-room", roomName); 
     sessionStorage.setItem("roomName", roomName);
   
-    location.replace(`/room`); // Byt till "rumsidan"
+    location.replace(`/room`); 
   };
   
   const createRoom = () => {
@@ -93,10 +93,7 @@ const initChatty = () => {
 };
 
 const displayMessage = (message) => {
-  welcomeMessage.innerText="";
-  const li = document.createElement("li");
-  li.innerText = message;
-  welcomeMessage.appendChild(li);
+  welcomeMessage.innerText=message;
 };
 
 socket.on("connect", () => {

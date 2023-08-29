@@ -8,7 +8,7 @@ const leaveBtn = document.getElementById("leaveBtn");
 const chattInput = document.getElementById("chattInput");
 const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
-const userList = document.getElementById("userList"); // Element för att visa användarlistan
+const userList = document.getElementById("userList"); 
 const typingIndicator = document.getElementById("typingIndicator");
 
 const inRoom = () => {
@@ -22,7 +22,7 @@ const inRoom = () => {
     socket.emit("join-room", storedRoomName);
   }
 
-  // Funktion för att skicka meddelanden - måste gå igenom
+  // Funktion för att skicka meddelanden
   const sendMessage = () => {
     const message = chattInput.value;
     socket.emit("send_message", storedRoomName, message);
@@ -35,7 +35,7 @@ const inRoom = () => {
     displayMessage(`${username}: ${message}`);
   });
 
-  // Lyssna på chattknappen - måste gå igenom
+  // Lyssna på chattknappen 
   chattBtn.addEventListener("click", sendMessage);
 
   const leaveRoom = (room, username) => {
@@ -83,14 +83,14 @@ const inRoom = () => {
   });
 };
 
-// chatt - måste gå igenom
+// chatt 
 const displayMessage = (message) => {
   const li = document.createElement("li");
   li.innerText = message;
   chatt.appendChild(li);
 };
 
-// Anslut till rummet med det lagrade användarnamnet - måste gå igenom
+// Anslut till rummet med det lagrade användarnamnet 
 socket.on("connect", () => {
   if (storedUsername) {
     socket.emit("user_connected_to_server", storedUsername);
