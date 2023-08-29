@@ -11,6 +11,7 @@ const usersList = document.getElementById("usersList");
 const roomsList = document.getElementById("roomsList");
 const createRoomBtn = document.getElementById("createRoom");
 const createRoomInput = document.getElementById("createRoomInput");
+const roomsAndUsersList = document.getElementById("roomsAndUsersList");
 
 const initChatty = () => {
   if (storedUsername) {
@@ -60,23 +61,55 @@ const initChatty = () => {
         const selectedRoom = event.target.innerText;
         if (selectedRoom) {
           joinRoom(selectedRoom);
-          displayUsersInRoom(selectedRoom);
+          // displayUsersInRoom(selectedRoom);
         }
       });
     });
   });
 };
 
-const displayUsersInRoom = (room) => {
-  socket.emit("get_users_in_room", room, (usersInRoom) => {
-    usersList.innerText = "Users in " + room + ":";
-    usersInRoom.forEach((user) => {
-      const li = document.createElement("li");
-      li.innerText = user;
-      usersList.appendChild(li);
-    });
+socket.on("update_rooms_with_users_list", (usersInRooms) => {
+  const roomsAndUsersList = document.getElementById("roomsAndUsersList");
+  roomsAndUsersList.innerHTML = "";
+  const roomsList = document.getElementById("roomsList");
+  roomsList.innerHTML = "";
+
+  Object.entries(usersInRooms).forEach(([roomName, users]) => {
+    if (users.length > 0) {
+      const roomItem = document.createElement("li");
+      roomItem.textContent = roomName;
+      roomsAndUsersList.appendChild(roomItem);
+      roomsList.appendChild(roomItem);
+
+      const userUl = document.createElement("ul");
+      users.forEach((user, userIndex) => {
+        const userItem = document.createElement("li");
+        userItem.textContent = `User ${userIndex + 1}: ${user}`;
+        userUl.appendChild(userItem);
+      });
+
+      roomItem.addEventListener("click", (event) => {
+        const selectedRoom = roomName;
+        if (selectedRoom) {
+          joinRoom(selectedRoom);
+        }
+      });
+
+      roomItem.appendChild(userUl);
+    }
   });
-};
+});
+
+// const displayUsersInRoom = (room) => {
+//   socket.emit("get_users_in_room", room, (usersInRoom) => {
+//     usersList.innerText = "Users in " + room + ":";
+//     usersInRoom.forEach((user) => {
+//       const li = document.createElement("li");
+//       li.innerText = user;
+//       usersList.appendChild(li);
+//     });
+//   });
+// };
 
 const displayMessage = (message) => {
   const li = document.createElement("li");

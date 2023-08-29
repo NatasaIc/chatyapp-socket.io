@@ -39,11 +39,6 @@ io.on("connection", (socket) => {
     connectedUsers.push(username);
     io.emit("update_users_list", connectedUsers);
     console.log("Listan med användare från server:" + connectedUsers);
-
-    
-
-
-
   });
 
   socket.on("create-room", (room) => {
@@ -55,9 +50,6 @@ io.on("connection", (socket) => {
     console.log("rumslistan efter pushat: " + createdRooms);
 
     io.emit("update_rooms_list", createdRooms);
-   
-
-
   });
 
   io.emit("update_rooms_list", createdRooms);
@@ -82,7 +74,6 @@ io.on("connection", (socket) => {
     console.log("listan med användare i " + room + ": " + usersInRooms[room]);
 
     io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-
   });
 
   // event när användaren börjar skriva
@@ -138,7 +129,7 @@ io.on("connection", (socket) => {
             const roomIndex = createdRooms.indexOf(room);
             if (roomIndex !== -1) {
               createdRooms.splice(roomIndex, 1);
-              io.emit("update_rooms_list", createdRooms);          
+              io.emit("update_rooms_list", createdRooms);
               io.emit("update_rooms_with_users_list", usersInRooms);
             }
           }
