@@ -11,38 +11,38 @@ const chatt = document.getElementById("chatt");
 const userList = document.getElementById("userList"); // Element för att visa användarlistan
 
 const inRoom = () => {
-if (storedUsername) {
+  if (storedUsername) {
     displayMessage(`Välkommen till ${storedRoomName} ${storedUsername}`);
     socket.emit("user_connected_to_room", storedUsername);
   }
 
-if (storedRoomName) {
+  if (storedRoomName) {
     console.log("namn från storage:" + storedRoomName);
     socket.emit("join-room", storedRoomName);
-}
+  }
 
-// Visa när någon ansluter till rummet
-socket.on("join_new_room", (room, username) => {
+  // Visa när någon ansluter till rummet
+  socket.on("join_new_room", (room, username) => {
     displayMessage(`${username} joined ${room}`);
   });
-  
-  // Hantera inkommande meddelanden - måste gå igenom 
-  socket.on("incoming_message", (message) => {
-    displayMessage(message);
-  });
-  
-  // Funktion för att skicka meddelanden - måste gå igenom 
+
+  // Funktion för att skicka meddelanden - måste gå igenom
   const sendMessage = () => {
     const message = chattInput.value;
-    socket.emit("send_message", message);
-    displayMessage(`You: ${message}`);
+    socket.emit("send_message", storedRoomName, message);
     chattInput.value = "";
   };
-  
+
+  // Hantera inkommande meddelanden - måste gå igenom
+  socket.on("incoming_message", (username, message) => {
+    console.log(`Received message from ${username}: ${message}`);
+    displayMessage(`${username}: ${message}`);
+  });
+
   // Lyssna på chattknappen - måste gå igenom
   chattBtn.addEventListener("click", sendMessage);
-  
-  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom 
+
+  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
   chattInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
       sendMessage();
@@ -50,7 +50,7 @@ socket.on("join_new_room", (room, username) => {
   });
 
   // Uppdatera användarlistan
-socket.on("update_user_in_roomlist", (usersInRoom) => {
+  socket.on("update_user_in_roomlist", (usersInRoom) => {
     console.log("användare: " + usersInRoom);
 
     userList.innerText = "";
@@ -59,27 +59,26 @@ socket.on("update_user_in_roomlist", (usersInRoom) => {
       li.innerText = user;
       userList.appendChild(li);
     });
-})
-
+  });
 };
 
-// chatt - måste gå igenom 
+// chatt - måste gå igenom
 const displayMessage = (message) => {
-    const li = document.createElement("li");
-    li.innerText = message;
-    chatt.appendChild(li);
-  };
+  const li = document.createElement("li");
+  li.innerText = message;
+  chatt.appendChild(li);
+};
 
-// Anslut till rummet med det lagrade användarnamnet - måste gå igenom 
+// Anslut till rummet med det lagrade användarnamnet - måste gå igenom
 socket.on("connect", () => {
-    if (storedUsername) {
-      socket.emit("user_connected_to_server", storedUsername);
-    }
-  
-    inRoom();
-  });
+  if (storedUsername) {
+    socket.emit("user_connected_to_server", storedUsername);
+  }
 
-//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs 
+  inRoom();
+});
+
+//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs
 //   // Rensa upp i sessionStorage när användaren lämnar sidan
 // window.addEventListener("beforeunload", () => {
 //     sessionStorage.removeItem("roomName");
