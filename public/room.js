@@ -26,19 +26,6 @@ const inRoom = () => {
     displayMessage(`${username} joined ${room}`);
   });
 
-  const leaveRoom = (room, username) => {
-    socket.emit("leave_room", room);
-    location.replace(`/lobby`);
-    displayMessage(`${username} left ${room}`);
-  };
-
-  leaveBtn.addEventListener("click", leaveRoom);
-
-  // Hantera inkommande meddelanden - måste gå igenom
-  socket.on("incoming_message", (message) => {
-    displayMessage(message);
-  });
-
   // Funktion för att skicka meddelanden - måste gå igenom
   const sendMessage = () => {
     const message = chattInput.value;
@@ -54,6 +41,14 @@ const inRoom = () => {
 
   // Lyssna på chattknappen - måste gå igenom
   chattBtn.addEventListener("click", sendMessage);
+
+  const leaveRoom = (room, username) => {
+    socket.emit("leave_room", room);
+    location.replace(`/lobby`);
+    displayMessage(`${username} left ${room}`);
+  };
+
+  leaveBtn.addEventListener("click", leaveRoom);
 
   // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
 
