@@ -92,39 +92,50 @@ io.on("connection", (socket) => {
     //   console.log("rummet heter" + room)
     //   socket.emit("roomName_to_current_room", room);
     // });
+  });
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", socket.username);
+    const index = connectedUsers.indexOf(socket.username);
 
-    socket.on("disconnect", () => {
-      console.log("User disconnected: ", socket.username);
-      const index = connectedUsers.indexOf(socket.username);
-      if (index !== -1) {
-        connectedUsers.splice(index, 1);
-        io.emit("update_users_list", connectedUsers);
-        socket.broadcast.emit("user_disconnected", socket.username);
-        console.log(
-          "Listan med användare från server vid disconnect:" + connectedUsers
-        );
-        console.log("User disconnected after: ", socket.username);
-      }
+    if (index !== -1) {
+      connectedUsers.splice(index, 1);
+      io.emit("update_users_list", connectedUsers);
+      socket.broadcast.emit("user_disconnected", socket.username);
+      console.log(
+        "Listan med användare från server vid disconnect:" + connectedUsers
+      );
+      console.log("User disconnected after: ", socket.username);
+    }
 
-      // Här startar vi en timeout på 1 sekund
-      // const timeout = setTimeout(() => {
-      const room = socket.room;
+    // Store the room and user in a variable to be used within the timeout
+    const room = socket.room;
+    const username = socket.username;
+
+    // Set a timeout to remove the user from the room's user list after a delay
+    setTimeout(() => {
       if (usersInRooms[room]) {
-        const roomIndex = usersInRooms[room].indexOf(socket.username);
+        const roomIndex = usersInRooms[room].indexOf(username);
         if (roomIndex !== -1) {
           usersInRooms[room].splice(roomIndex, 1);
           io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+          // If the room becomes empty, remove it from the list of active rooms
+          if (usersInRooms[room].length === 0) {
+            const roomIndex = createdRooms.indexOf(room);
+            if (roomIndex !== -1) {
+              createdRooms.splice(roomIndex, 1);
+              io.emit("update_rooms_list", createdRooms);
+            }
+          }
         }
       }
-      // }, 1000);
-    });
+    }, 1000); // Adjust the delay as needed
   });
-
-  // ZOE //
-  // vi måste ta bort den från listan när den är borta
-  // if (usersInRooms<0) {}
-
-  console.log(io.sockets.adapter.rooms);
 });
+
+// ZOE //
+// vi måste ta bort den från listan när den är borta
+// if (usersInRooms<0) {}
+
+console.log(io.sockets.adapter.rooms);
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));
