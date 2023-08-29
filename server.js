@@ -10,8 +10,6 @@ const io = new Server(server);
 const createdRooms = [];
 const connectedUsers = [];
 
-// usersInRooms stämmer inte helt här - det måste vi kolla över (alltså när den skickas till lobby)
-
 const usersInRooms = {};
 
 app.use(express.static("public"));
