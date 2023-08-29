@@ -14,7 +14,7 @@ const typingIndicator = document.getElementById("typingIndicator");
 
 const inRoom = () => {
   if (storedUsername) {
-    h1.innerText=`${storedRoomName}`;
+    h1.innerText=`Chattrum: ${storedRoomName}`;
     displayMessage(`Välkommen till ${storedRoomName} ${storedUsername}`);
     socket.emit("user_connected_to_room", storedUsername);
   }
