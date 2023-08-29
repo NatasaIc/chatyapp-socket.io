@@ -69,14 +69,12 @@ io.on("connection", (socket) => {
 
     usersInRooms[room].push(socket.username);
 
-    // Lagra rummet som en egenskap i socket-objektet TEST FÖR DET HÄR MED DISCONNECT
+    // Lagra rummet som en egenskap i socket-objektet
     socket.room = room;
 
     console.log("listan med användare i " + room + ": " + usersInRooms[room]);
 
     io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-
-    socket.broadcast.to(room).emit("join_new_room", room, socket.username);
   });
 
   socket.on("send_message", (room, message) => {
@@ -99,15 +97,6 @@ io.on("connection", (socket) => {
   });
 
   console.log(io.sockets.adapter.rooms);
-
-  // ZOE //
-  // sen ska vi fixa det här (gissning) när vi lämnar rummet (via knappen) - och då tas den bort
-  // kom ihåg att om rummet är tomt så ska det tas bort - inbyggd funktion???
-  // socket.on("leave-room", (room) => {
-  //   socket.leave(room);
-  //   console.log("rummet heter" + room)
-  //   socket.emit("roomName_to_current_room", room);
-  // });
 
   socket.on("disconnect", () => {
     console.log("User disconnected: ", socket.username);

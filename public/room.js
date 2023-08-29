@@ -21,11 +21,6 @@ const inRoom = () => {
     socket.emit("join-room", storedRoomName);
   }
 
-  // Visa när någon ansluter till rummet
-  socket.on("join_new_room", (room, username) => {
-    displayMessage(`${username} joined ${room}`);
-  });
-
   let typing = false; // Flag to track typing status
   let lastTypingTime = 3000;
 
@@ -94,10 +89,3 @@ socket.on("connect", () => {
 
   inRoom();
 });
-
-//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs
-//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs
-//   // Rensa upp i sessionStorage när användaren lämnar sidan
-// window.addEventListener("beforeunload", () => {
-//     sessionStorage.removeItem("roomName");
-//   });

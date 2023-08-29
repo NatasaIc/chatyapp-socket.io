@@ -17,11 +17,11 @@ startBtn.addEventListener("click", function () {
   // Anslut till Socket.IO-servern
   socket.connect();
 
-  // client-side
+  // client-sidan
   socket.on("connect", () => {
     socket.emit("user_connected_to_server", username);
 
-    // Save username in sessionStorage
+    // Spara till sessionStorage
     sessionStorage.setItem("username", username);
 
     location.replace(`/lobby`);

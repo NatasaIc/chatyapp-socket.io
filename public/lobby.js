@@ -19,7 +19,6 @@ const initChatty = () => {
 
   socket.on("user_disconnected", (username) => {
     console.log(`User disconnected: ${username}`);
-    displayMessage(`User ${username} disconnected`);
   });
   
   const joinRoom = (roomName) => {
