@@ -8,8 +8,8 @@ const input = document.getElementById("createUsernameInput");
 // Lägg till en klickhändelse för startknappen
 startBtn.addEventListener("click", function () {
   const usernameCheck = input.value;
-  if (usernameCheck.length < 3) {
-    alert("Användarnamnet måste vara längre än 3 tecken");
+  if (usernameCheck.length < 1) {
+    alert("Vänligen fyll i ett användarnamn");
     location.replace(`/`);
   }
   const username = usernameCheck;
