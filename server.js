@@ -40,96 +40,100 @@ io.on("connection", (socket) => {
     connectedUsers.push(username);
     io.emit("update_users_list", connectedUsers);
     console.log("Listan med användare från server:" + connectedUsers);
+  });
 
-    socket.on("create-room", (room) => {
-      socket.join(room);
-      console.log("joined " + room);
+  socket.on("create-room", (room) => {
+    socket.join(room);
+    console.log("joined " + room);
 
-      console.log("rumslistan innan nytt pushats: " + createdRooms);
-      createdRooms.push(room);
-      console.log("rumslistan efter pushat: " + createdRooms);
-
-      io.emit("update_rooms_list", createdRooms);
-      console.log("testar nu: " + createdRooms);
-
-      // io.emit("update_rooms_list", createdRooms);
-    });
+    console.log("rumslistan innan nytt pushats: " + createdRooms);
+    createdRooms.push(room);
+    console.log("rumslistan efter pushat: " + createdRooms);
 
     io.emit("update_rooms_list", createdRooms);
+    console.log("testar nu: " + createdRooms);
 
-    socket.on("join-room", (room) => {
-      socket.join(room);
-      console.log(socket.username + " joinar " + room);
-
-      // Skapa listan för detta rum om det inte finns
-      if (!usersInRooms[room]) {
-        usersInRooms[room] = [];
-      }
-
-      usersInRooms[room].push(socket.username);
-
-      // Lagra rummet som en egenskap i socket-objektet TEST FÖR DET HÄR MED DISCONNECT
-      socket.room = room;
-
-      console.log("listan med användare i " + room + ": " + usersInRooms[room]);
-
-      io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-
-      socket.broadcast.to(room).emit("join_new_room", room, socket.username);
-    });
-
-    socket.on("leave_room", (room) => {
-      socket.leave(room);
-    });
-
-    console.log(io.sockets.adapter.rooms);
-
-    // ZOE //
-    // sen ska vi fixa det här (gissning) när vi lämnar rummet (via knappen) - och då tas den bort
-    // kom ihåg att om rummet är tomt så ska det tas bort - inbyggd funktion???
-    // socket.on("leave-room", (room) => {
-    //   socket.leave(room);
-    //   console.log("rummet heter" + room)
-    //   socket.emit("roomName_to_current_room", room);
-    // });
+    // io.emit("update_rooms_list", createdRooms);
   });
-  socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.username);
-    const index = connectedUsers.indexOf(socket.username);
 
-    if (index !== -1) {
-      connectedUsers.splice(index, 1);
-      io.emit("update_users_list", connectedUsers);
-      socket.broadcast.emit("user_disconnected", socket.username);
-      console.log(
-        "Listan med användare från server vid disconnect:" + connectedUsers
-      );
-      console.log("User disconnected after: ", socket.username);
+  io.emit("update_rooms_list", createdRooms);
+
+  socket.on("join-room", (room) => {
+    socket.join(room);
+    console.log(socket.username + " joinar " + room);
+
+    // Skapa listan för detta rum om det inte finns
+    if (!usersInRooms[room]) {
+      usersInRooms[room] = [];
     }
 
-    // Store the room and user in a variable to be used within the timeout
-    const room = socket.room;
-    const username = socket.username;
+    usersInRooms[room].push(socket.username);
 
-    // Set a timeout to remove the user from the room's user list after a delay
-    setTimeout(() => {
-      if (usersInRooms[room]) {
-        const roomIndex = usersInRooms[room].indexOf(username);
-        if (roomIndex !== -1) {
-          usersInRooms[room].splice(roomIndex, 1);
-          io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-          // If the room becomes empty, remove it from the list of active rooms
-          if (usersInRooms[room].length === 0) {
-            const roomIndex = createdRooms.indexOf(room);
-            if (roomIndex !== -1) {
-              createdRooms.splice(roomIndex, 1);
-              io.emit("update_rooms_list", createdRooms);
-            }
+    // Lagra rummet som en egenskap i socket-objektet TEST FÖR DET HÄR MED DISCONNECT
+    socket.room = room;
+
+    console.log("listan med användare i " + room + ": " + usersInRooms[room]);
+
+    io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+
+    socket.broadcast.to(room).emit("join_new_room", room, socket.username);
+  });
+  socket.on("send_message", (room, message) => {
+    // Broadcast the message to all users in the same room
+    io.to(room).emit("incoming_message", socket.username, message);
+  });
+
+  socket.on("leave_room", (room) => {
+    socket.leave(room);
+  });
+
+  console.log(io.sockets.adapter.rooms);
+
+  // ZOE //
+  // sen ska vi fixa det här (gissning) när vi lämnar rummet (via knappen) - och då tas den bort
+  // kom ihåg att om rummet är tomt så ska det tas bort - inbyggd funktion???
+  // socket.on("leave-room", (room) => {
+  //   socket.leave(room);
+  //   console.log("rummet heter" + room)
+  //   socket.emit("roomName_to_current_room", room);
+  // });
+});
+socket.on("disconnect", () => {
+  console.log("User disconnected: ", socket.username);
+  const index = connectedUsers.indexOf(socket.username);
+
+  if (index !== -1) {
+    connectedUsers.splice(index, 1);
+    io.emit("update_users_list", connectedUsers);
+    socket.broadcast.emit("user_disconnected", socket.username);
+    console.log(
+      "Listan med användare från server vid disconnect:" + connectedUsers
+    );
+    console.log("User disconnected after: ", socket.username);
+  }
+
+  // Store the room and user in a variable to be used within the timeout
+  const room = socket.room;
+  const username = socket.username;
+
+  // Set a timeout to remove the user from the room's user list after a delay
+  setTimeout(() => {
+    if (usersInRooms[room]) {
+      const roomIndex = usersInRooms[room].indexOf(username);
+      if (roomIndex !== -1) {
+        usersInRooms[room].splice(roomIndex, 1);
+        io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+        // If the room becomes empty, remove it from the list of active rooms
+        if (usersInRooms[room].length === 0) {
+          const roomIndex = createdRooms.indexOf(room);
+          if (roomIndex !== -1) {
+            createdRooms.splice(roomIndex, 1);
+            io.emit("update_rooms_list", createdRooms);
           }
         }
       }
-    }, 1000); // Adjust the delay as needed
-  });
+    }
+  }, 1000); // Adjust the delay as needed
 });
 
 // ZOE //

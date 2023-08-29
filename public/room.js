@@ -42,13 +42,20 @@ const inRoom = () => {
   // Funktion för att skicka meddelanden - måste gå igenom
   const sendMessage = () => {
     const message = chattInput.value;
-    socket.emit("send_message", message);
-    displayMessage(`You: ${message}`);
+    socket.emit("send_message", storedRoomName, message);
     chattInput.value = "";
   };
 
+  // Hantera inkommande meddelanden - måste gå igenom
+  socket.on("incoming_message", (username, message) => {
+    console.log(`Received message from ${username}: ${message}`);
+    displayMessage(`${username}: ${message}`);
+  });
+
   // Lyssna på chattknappen - måste gå igenom
   chattBtn.addEventListener("click", sendMessage);
+
+  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
 
   // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
   chattInput.addEventListener("keyup", (event) => {
@@ -86,6 +93,7 @@ socket.on("connect", () => {
   inRoom();
 });
 
+//   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs
 //   // måste komma ihåg att rensa i storage när vi lämnar sidan sen - typ vid knappen eller dylikt: // vet inte om det behövs
 //   // Rensa upp i sessionStorage när användaren lämnar sidan
 // window.addEventListener("beforeunload", () => {
