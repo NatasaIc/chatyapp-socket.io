@@ -36,6 +36,8 @@ const initChatty = () => {
 
   createRoomBtn.addEventListener("click", createRoom);
 
+  // här är användarna - alla som är connectade - denna kan vi ta bort innan inlämning
+
   socket.on("update_users_list", (updatedUsersList) => {
     console.log(updatedUsersList);
     usersList.innerText = "";
@@ -58,7 +60,6 @@ const initChatty = () => {
         const selectedRoom = event.target.innerText;
         if (selectedRoom) {
           joinRoom(selectedRoom);
-          displayUsersInRoom(selectedRoom);
         }
       });
     });
