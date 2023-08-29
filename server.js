@@ -44,7 +44,7 @@ io.on("connection", (socket) => {
     socket.on("create-room", (room) => {
       socket.join(room);
       console.log("joined " + room);
-      
+
       console.log("rumslistan innan nytt pushats: " + createdRooms);
       createdRooms.push(room);
       console.log("rumslistan efter pushat: " + createdRooms);
@@ -61,22 +61,25 @@ io.on("connection", (socket) => {
       socket.join(room);
       console.log(socket.username + " joinar " + room);
 
-            // Skapa listan för detta rum om det inte finns
-            if (!usersInRooms[room]) {
-              usersInRooms[room] = [];
-            }
-        
-            usersInRooms[room].push(socket.username);
+      // Skapa listan för detta rum om det inte finns
+      if (!usersInRooms[room]) {
+        usersInRooms[room] = [];
+      }
 
-              // Lagra rummet som en egenskap i socket-objektet TEST FÖR DET HÄR MED DISCONNECT
-            socket.room = room;
-        
-            console.log("listan med användare i " + room + ": " + usersInRooms[room]);
-        
-            io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-      
+      usersInRooms[room].push(socket.username);
+
+      // Lagra rummet som en egenskap i socket-objektet TEST FÖR DET HÄR MED DISCONNECT
+      socket.room = room;
+
+      console.log("listan med användare i " + room + ": " + usersInRooms[room]);
+
+      io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+
       socket.broadcast.to(room).emit("join_new_room", room, socket.username);
+    });
 
+    socket.on("leave_room", (room) => {
+      socket.leave(room);
     });
 
     console.log(io.sockets.adapter.rooms);
@@ -97,32 +100,31 @@ io.on("connection", (socket) => {
         connectedUsers.splice(index, 1);
         io.emit("update_users_list", connectedUsers);
         socket.broadcast.emit("user_disconnected", socket.username);
-        console.log("Listan med användare från server vid disconnect:" + connectedUsers);
+        console.log(
+          "Listan med användare från server vid disconnect:" + connectedUsers
+        );
         console.log("User disconnected after: ", socket.username);
       }
-    
-  // Här startar vi en timeout på 1 sekund
-  // const timeout = setTimeout(() => {
-    const room = socket.room;
-    if (usersInRooms[room]) {
-      const roomIndex = usersInRooms[room].indexOf(socket.username);
-      if (roomIndex !== -1) {
-        usersInRooms[room].splice(roomIndex, 1);
-        io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
-      }
-    }
-  // }, 1000);
-});
 
+      // Här startar vi en timeout på 1 sekund
+      // const timeout = setTimeout(() => {
+      const room = socket.room;
+      if (usersInRooms[room]) {
+        const roomIndex = usersInRooms[room].indexOf(socket.username);
+        if (roomIndex !== -1) {
+          usersInRooms[room].splice(roomIndex, 1);
+          io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+        }
+      }
+      // }, 1000);
+    });
   });
 
   // ZOE //
-  // vi måste ta bort den från listan när den är borta 
+  // vi måste ta bort den från listan när den är borta
   // if (usersInRooms<0) {}
 
   console.log(io.sockets.adapter.rooms);
-
-
 });
 
 server.listen(port, () => console.log(`Listening on port: ${port}`));
