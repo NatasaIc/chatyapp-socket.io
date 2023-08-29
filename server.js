@@ -62,10 +62,8 @@ io.on("connection", (socket) => {
 
   io.emit("update_rooms_list", createdRooms);
 
-      // ZOE OCH TOVE 
-      io.emit("update_rooms_with_users_list", usersInRooms);
-      console.log("Vi testar här" + usersInRooms);
-       // HIT //
+  io.emit("update_rooms_with_users_list", usersInRooms);
+  console.log("Vi testar här" + usersInRooms);
 
   socket.on("join-room", (room) => {
     socket.join(room);
@@ -139,10 +137,8 @@ io.on("connection", (socket) => {
             const roomIndex = createdRooms.indexOf(room);
             if (roomIndex !== -1) {
               createdRooms.splice(roomIndex, 1);
-              io.emit("update_rooms_list", createdRooms);
-                  // TOVE OCH ZOE //
+              io.emit("update_rooms_list", createdRooms);          
               io.emit("update_rooms_with_users_list", usersInRooms);
-    // HIT //
             }
           }
         }
