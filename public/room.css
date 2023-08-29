@@ -22,6 +22,10 @@ button {
   cursor: pointer;
 }
 
+#leaveBtn {
+  margin-left: 36px;
+}
+
 button:hover {
   background-color: #2980b9;
 }
