@@ -3,19 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="room.css" />
     <title>Document</title>
   </head>
   <body>
-    <h1> </h1>
+    <h1></h1>
     <button id="leaveBtn">Lämna rum</button>
-    <input id="chattInput"/>
+    <input id="chattInput" />
     <button id="chattBtn">Skicka</button>
-    <ul id="chatt">Meddelanden</ul>
-    <ul id="userList">Användare i rummet</ul>
+    <ul id="chatt">
+      Meddelanden
+    </ul>
+    <ul id="userList">
+      Användare i rummet
+    </ul>
+    <p id="typingIndicator"></p>
     <script src="/socket.io/socket.io.js"></script>
     <script src="room.js" defer></script>
   </body>
 </html>
-
-
-

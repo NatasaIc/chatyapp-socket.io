@@ -77,17 +77,18 @@ io.on("connection", (socket) => {
     io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
   });
 
+  // event när användaren börjar skriva
+  socket.on("user_typing", () => {
+    socket.to(socket.room).emit("user_typing", socket.username);
+  });
+
+  // event när användaren skickar meddelandet
   socket.on("send_message", (room, message) => {
-    // Broadcast the message to all users in the same room
+    // Broadcastar meddelandet till alla användare i rummet
     io.to(room).emit("incoming_message", socket.username, message);
-  });
 
-  socket.on("typing", () => {
-    socket.broadcast.to(socket.room).emit("typing", socket.username);
-  });
-
-  socket.on("stop_typing", () => {
-    socket.broadcast.to(socket.room).emit("stop_typing");
+    // informerar andra användare att användaren slutat skriva
+    socket.to(room).emit("user_stopped_typing", socket.username);
   });
 
   console.log(io.sockets.adapter.rooms);
@@ -133,7 +134,7 @@ io.on("connection", (socket) => {
           }
         }
       }
-    }, 1000); // Adjust the delay as needed
+    }, 500); // Adjust the delay as needed
   });
 });
 

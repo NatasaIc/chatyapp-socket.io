@@ -1,0 +1,30 @@
+body {
+  color: brown;
+}
+
+#typingIndicator {
+  font-style: italic;
+}
+
+.typing-animation::after {
+  content: "";
+  display: inline-block;
+  vertical-align: middle;
+  width: 0.5em;
+  height: 1em;
+  background-color: black; /* You can set the background color as desired */
+  animation: ellipsis 1s infinite;
+}
+
+@keyframes ellipsis {
+  0%,
+  100% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+}

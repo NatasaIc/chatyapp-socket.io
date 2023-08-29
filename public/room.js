@@ -9,6 +9,7 @@ const chattInput = document.getElementById("chattInput");
 const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
 const userList = document.getElementById("userList"); // Element för att visa användarlistan
+const typingIndicator = document.getElementById("typingIndicator");
 
 const inRoom = () => {
   if (storedUsername) {
@@ -21,24 +22,17 @@ const inRoom = () => {
     socket.emit("join-room", storedRoomName);
   }
 
-  let typing = false; // Flag to track typing status
-  let lastTypingTime = 3000;
-
   // Funktion för att skicka meddelanden - måste gå igenom
   const sendMessage = () => {
     const message = chattInput.value;
     socket.emit("send_message", storedRoomName, message);
     chattInput.value = "";
-    socket.emit("stop_typing");
-    typing = false;
   };
 
-  // Hantera inkommande meddelanden - måste gå igenom
+  // Hantera inkommande meddelanden
   socket.on("incoming_message", (username, message) => {
     console.log(`Received message from ${username}: ${message}`);
     displayMessage(`${username}: ${message}`);
-    socket.emit("stop_typing");
-    typing = false;
   });
 
   // Lyssna på chattknappen - måste gå igenom
@@ -47,18 +41,32 @@ const inRoom = () => {
   const leaveRoom = (room, username) => {
     socket.emit("leave_room", room);
     location.replace(`/lobby`);
-    displayMessage(`${username} left ${room}`);
+    displayMessage(`${username} lämnade ${room}`);
   };
 
   leaveBtn.addEventListener("click", leaveRoom);
 
-  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
+  // lyssnar på när användaren skriver
+  chattInput.addEventListener("input", () => {
+    socket.emit("user_typing");
+    typingIndicator.classList.add("typing-animation");
+  });
 
-  // Lyssna på Enter-tangenten i chattinputfältet - måste gå igenom
+  // lyssnar på användaren slutar skriva
   chattInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
       sendMessage();
     }
+    socket.emit("user_stopped_typing");
+    typingIndicator.classList.remove("typing-animation");
+  });
+
+  socket.on("user_typing", (username) => {
+    typingIndicator.innerText = `${username} skriver`;
+  });
+
+  socket.on("user_stopped_typing", () => {
+    typingIndicator.innerText = "";
   });
 
   // Uppdatera användarlistan
