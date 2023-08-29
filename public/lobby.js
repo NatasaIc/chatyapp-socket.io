@@ -11,6 +11,7 @@ const usersList = document.getElementById("usersList");
 const roomsList = document.getElementById("roomsList");
 const createRoomBtn = document.getElementById("createRoom");
 const createRoomInput = document.getElementById("createRoomInput");
+const roomsAndUsersList = document.getElementById("roomsAndUsersList");
 
 const initChatty = () => {
   if (storedUsername) {
@@ -62,6 +63,37 @@ const initChatty = () => {
       });
     });
   });
+
+  // Här är listan med rum + användare som är i rummet 
+
+  socket.on("update_rooms_with_users_list", (usersInRooms) => {
+    const roomsAndUsersList = document.getElementById("roomsAndUsersList");
+    roomsAndUsersList.innerHTML = "";
+  
+    Object.entries(usersInRooms).forEach(([roomName, users]) => {
+      if (users.length > 0) {
+        const roomItem = document.createElement("li");
+        roomItem.textContent = roomName;
+        roomsAndUsersList.appendChild(roomItem);
+  
+        const userUl = document.createElement("ul");
+        users.forEach((user, userIndex) => {
+          const userItem = document.createElement("li");
+          userItem.textContent = `User ${userIndex + 1}: ${user}`;
+          userUl.appendChild(userItem);
+        });
+  
+        roomItem.appendChild(userUl);
+      }
+    });
+  });
+  
+  
+  
+  
+  
+  
+
 
 };
 

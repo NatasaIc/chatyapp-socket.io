@@ -10,8 +10,7 @@ const io = new Server(server);
 const createdRooms = [];
 const connectedUsers = [];
 
-// lista som ska uppdateras när man går in eller ut ur rummet (eller disconnectar)
-// const usersInRoom = [];
+// usersInRooms stämmer inte helt här - det måste vi kolla över (alltså när den skickas till lobby)
 
 const usersInRooms = {};
 
@@ -40,6 +39,11 @@ io.on("connection", (socket) => {
     connectedUsers.push(username);
     io.emit("update_users_list", connectedUsers);
     console.log("Listan med användare från server:" + connectedUsers);
+
+    
+
+
+
   });
 
   socket.on("create-room", (room) => {
@@ -51,12 +55,17 @@ io.on("connection", (socket) => {
     console.log("rumslistan efter pushat: " + createdRooms);
 
     io.emit("update_rooms_list", createdRooms);
-    console.log("testar nu: " + createdRooms);
+   
 
-    // io.emit("update_rooms_list", createdRooms);
+
   });
 
   io.emit("update_rooms_list", createdRooms);
+
+      // ZOE OCH TOVE 
+      io.emit("update_rooms_with_users_list", usersInRooms);
+      console.log("Vi testar här" + usersInRooms);
+       // HIT //
 
   socket.on("join-room", (room) => {
     socket.join(room);
@@ -75,6 +84,7 @@ io.on("connection", (socket) => {
     console.log("listan med användare i " + room + ": " + usersInRooms[room]);
 
     io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+
   });
 
   socket.on("send_message", (room, message) => {
@@ -105,6 +115,7 @@ io.on("connection", (socket) => {
     if (index !== -1) {
       connectedUsers.splice(index, 1);
       io.emit("update_users_list", connectedUsers);
+
       socket.broadcast.emit("user_disconnected", socket.username);
       console.log(
         "Listan med användare från server vid disconnect:" + connectedUsers
@@ -129,6 +140,9 @@ io.on("connection", (socket) => {
             if (roomIndex !== -1) {
               createdRooms.splice(roomIndex, 1);
               io.emit("update_rooms_list", createdRooms);
+                  // TOVE OCH ZOE //
+              io.emit("update_rooms_with_users_list", usersInRooms);
+    // HIT //
             }
           }
         }
@@ -136,10 +150,6 @@ io.on("connection", (socket) => {
     }, 1000); // Adjust the delay as needed
   });
 });
-
-// ZOE //
-// vi måste ta bort den från listan när den är borta
-// if (usersInRooms<0) {}
 
 console.log(io.sockets.adapter.rooms);
 
