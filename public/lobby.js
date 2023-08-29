@@ -36,14 +36,14 @@ const initChatty = () => {
   
   createRoomBtn.addEventListener("click", createRoom);
   
-  socket.on("update_users_list", (updatedUsersList) => {
-    usersList.innerText ="Alla anslutna användare";
-    updatedUsersList.forEach((user) => {
-      const li = document.createElement("li");
-      li.innerText = user;
-      usersList.appendChild(li);
-    });
-  });
+  // socket.on("update_users_list", (updatedUsersList) => {
+  //   usersList.innerText ="Alla anslutna användare";
+  //   updatedUsersList.forEach((user) => {
+  //     const li = document.createElement("li");
+  //     li.innerText = user;
+  //     usersList.appendChild(li);
+  //   });
+  // });
 
   // socket.on("update_rooms_list", (updatedListOfRooms) => {
   //   console.log(updatedListOfRooms);
@@ -64,7 +64,7 @@ const initChatty = () => {
 
   socket.on("update_rooms_with_users_list", (usersInRooms) => {
     const roomsList = document.getElementById("roomsList");
-    roomsList.innerHTML = "Chattrum";
+    roomsList.innerHTML = "";
   
     Object.entries(usersInRooms).forEach(([roomName, users]) => {
       if (users.length > 0) {
