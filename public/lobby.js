@@ -36,10 +36,8 @@ const initChatty = () => {
   
   createRoomBtn.addEventListener("click", createRoom);
   
-  // här är användarna - alla som är connectade - denna kan vi ta bort innan inlämning 
-
   socket.on("update_users_list", (updatedUsersList) => {
-    usersList.innerText ="";
+    usersList.innerText ="Alla anslutna användare";
     updatedUsersList.forEach((user) => {
       const li = document.createElement("li");
       li.innerText = user;
@@ -66,7 +64,7 @@ const initChatty = () => {
 
   socket.on("update_rooms_with_users_list", (usersInRooms) => {
     const roomsList = document.getElementById("roomsList");
-    roomsList.innerHTML = "";
+    roomsList.innerHTML = "Chattrum";
   
     Object.entries(usersInRooms).forEach(([roomName, users]) => {
       if (users.length > 0) {
@@ -92,10 +90,10 @@ const initChatty = () => {
       }
     });
   });
-
 };
 
 const displayMessage = (message) => {
+  welcomeMessage.innerText="";
   const li = document.createElement("li");
   li.innerText = message;
   welcomeMessage.appendChild(li);
