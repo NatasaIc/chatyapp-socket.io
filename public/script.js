@@ -7,7 +7,12 @@ const input = document.getElementById("createUsernameInput");
 
 // Lägg till en klickhändelse för startknappen
 startBtn.addEventListener("click", function () {
-  const username = input.value;
+  const usernameCheck = input.value;
+  if (usernameCheck.length < 3) {
+    alert("Användarnamnet måste vara längre än 3 tecken");
+    location.replace(`/`);
+  }
+  const username = usernameCheck;
 
   // Anslut till Socket.IO-servern
   socket.connect();
