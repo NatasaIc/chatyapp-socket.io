@@ -26,17 +26,24 @@ const inRoom = () => {
     displayMessage(`${username} joined ${room}`);
   });
 
+  let typing = false; // Flag to track typing status
+  let lastTypingTime = 3000;
+
   // Funktion för att skicka meddelanden - måste gå igenom
   const sendMessage = () => {
     const message = chattInput.value;
     socket.emit("send_message", storedRoomName, message);
     chattInput.value = "";
+    socket.emit("stop_typing");
+    typing = false;
   };
 
   // Hantera inkommande meddelanden - måste gå igenom
   socket.on("incoming_message", (username, message) => {
     console.log(`Received message from ${username}: ${message}`);
     displayMessage(`${username}: ${message}`);
+    socket.emit("stop_typing");
+    typing = false;
   });
 
   // Lyssna på chattknappen - måste gå igenom

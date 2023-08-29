@@ -84,6 +84,14 @@ io.on("connection", (socket) => {
     io.to(room).emit("incoming_message", socket.username, message);
   });
 
+  socket.on("typing", () => {
+    socket.broadcast.to(socket.room).emit("typing", socket.username);
+  });
+
+  socket.on("stop_typing", () => {
+    socket.broadcast.to(socket.room).emit("stop_typing");
+  });
+
   console.log(io.sockets.adapter.rooms);
 
   socket.on("leave_room", (room) => {
@@ -119,7 +127,7 @@ io.on("connection", (socket) => {
     const room = socket.room;
     const username = socket.username;
 
-    // Set a timeout to remove the user from the room's user list after a delay
+    //Denna fördröjning ger tid för servern att kontrollera om användarens rum är tomt efter att de kopplat bort.
     setTimeout(() => {
       if (usersInRooms[room]) {
         const roomIndex = usersInRooms[room].indexOf(username);
