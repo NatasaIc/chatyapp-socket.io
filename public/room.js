@@ -28,23 +28,6 @@ function searchGifs(query) {
     });
 }
 
-searchBtn.addEventListener("click", function () {
-  const query = searchInput.value;
-  searchGifs(query)
-    .then((gifUrls) => {
-      // Select a GIF from the results
-      const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
-      // Send a message with the GIF to the chat
-      const gifImg = document.createElement("img");
-      gifImg.src = gifUrl;
-      chatt.append(gifImg);
-      socket.emit("chat_message", room, message);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
-
 const inRoom = () => {
   if (storedUsername) {
     h1.innerText = `Chattrum: ${storedRoomName}`;
@@ -80,6 +63,26 @@ const inRoom = () => {
   };
 
   leaveBtn.addEventListener("click", leaveRoom);
+
+  searchBtn.addEventListener("click", function () {
+    const query = searchInput.value;
+    searchGifs(query)
+      .then((gifUrls) => {
+        const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+        // Emit the GIF URL to the server
+        socket.emit("send_gif", storedRoomName, gifUrl);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
+
+  socket.on("receive_gif", (username, gifUrl) => {
+    displayMessage(`${username}:`);
+    const gifImg = document.createElement("img");
+    gifImg.src = gifUrl;
+    chatt.appendChild(gifImg);
+  });
 
   // lyssnar på när användaren skriver
   chattInput.addEventListener("input", () => {

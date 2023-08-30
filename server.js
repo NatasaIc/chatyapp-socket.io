@@ -88,6 +88,9 @@ io.on("connection", (socket) => {
     // informerar andra användare att användaren slutat skriva
     socket.to(room).emit("user_stopped_typing", socket.username);
   });
+  socket.on("send_gif", (room, gifUrl) => {
+    io.to(room).emit("receive_gif", socket.username, gifUrl);
+  });
 
   console.log(io.sockets.adapter.rooms);
 
