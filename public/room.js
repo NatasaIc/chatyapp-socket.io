@@ -42,20 +42,21 @@ const inRoom = () => {
   // Funktion för att skicka meddelanden
   const sendMessage = () => {
     let message = chattInput.value;
-    chattInput.value = "";
-    if ((chattInput.value = "/gif")) {
+    if (chattInput.value === "/gif") {
       let query = chattInput.value;
       searchGifs(query)
         .then((gifUrls) => {
           const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
           // Emit the GIF URL to the server
           socket.emit("send_gif", storedRoomName, gifUrl);
+          chattInput.value = "";
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
       socket.emit("send_message", storedRoomName, message);
+      chattInput.value = "";
     }
   };
 
@@ -80,6 +81,7 @@ const inRoom = () => {
     displayMessage(`${username}:`);
     const gifImg = document.createElement("img");
     gifImg.src = gifUrl;
+    gifImg.style.width = "15%";
     chatt.appendChild(gifImg);
   });
 
