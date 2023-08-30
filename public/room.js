@@ -47,7 +47,6 @@ const inRoom = () => {
       searchGifs(query)
         .then((gifUrls) => {
           const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
-          // Emit the GIF URL to the server
           socket.emit("send_gif", storedRoomName, gifUrl);
           chattInput.value = "";
         })
@@ -121,7 +120,7 @@ const inRoom = () => {
   });
 };
 
-// chatt
+// Chatt
 const displayMessage = (message) => {
   const li = document.createElement("li");
   li.innerText = message;

@@ -81,7 +81,6 @@ io.on("connection", (socket) => {
 
   // event när användaren skickar meddelandet
   socket.on("send_message", (room, message) => {
-    /*  io.emit("chat_message", room, message); */
     // Broadcastar meddelandet till alla användare i rummet
     io.to(room).emit("incoming_message", socket.username, message);
 
@@ -115,7 +114,7 @@ io.on("connection", (socket) => {
       console.log("User disconnected after: ", socket.username);
     }
 
-    // Store the room and user in a variable to be used within the timeout
+    // lagra room och user i variabler för att använda i timeout:en 
     const room = socket.room;
     const username = socket.username;
 
@@ -127,7 +126,7 @@ io.on("connection", (socket) => {
           usersInRooms[room].splice(roomIndex, 1);
           io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
           io.emit("update_rooms_with_users_list", usersInRooms);
-          // If the room becomes empty, remove it from the list of active rooms
+          // om rummet är tomt, ta bort det från listan med aktiva rum 
           if (usersInRooms[room].length === 0) {
             const roomIndex = createdRooms.indexOf(room);
             if (roomIndex !== -1) {
@@ -138,7 +137,7 @@ io.on("connection", (socket) => {
           }
         }
       }
-    }, 500); // Adjust the delay as needed
+    }, 500); 
   });
 });
 
