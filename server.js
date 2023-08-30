@@ -122,6 +122,7 @@ io.on("connection", (socket) => {
         if (roomIndex !== -1) {
           usersInRooms[room].splice(roomIndex, 1);
           io.to(room).emit("update_user_in_roomlist", usersInRooms[room]);
+          io.emit("update_rooms_with_users_list", usersInRooms);
           // If the room becomes empty, remove it from the list of active rooms
           if (usersInRooms[room].length === 0) {
             const roomIndex = createdRooms.indexOf(room);
