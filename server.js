@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
 
   // event när användaren börjar skriva
   socket.on("user_typing", () => {
-    io.to(socket.room).emit("user_typing", socket.username);
+    socket.broadcast.to(socket.room).emit("user_typing", socket.username);
   });
 
   // event när användaren skickar meddelandet
