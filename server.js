@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
 
   // event när användaren skickar meddelandet
   socket.on("send_message", (room, message) => {
-    io.emit("chat_message", room, message);
+    /*  io.emit("chat_message", room, message); */
     // Broadcastar meddelandet till alla användare i rummet
     io.to(room).emit("incoming_message", socket.username, message);
 

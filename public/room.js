@@ -11,7 +11,6 @@ const chattBtn = document.getElementById("chattBtn");
 const chatt = document.getElementById("chatt");
 const userList = document.getElementById("userList");
 const typingIndicator = document.getElementById("typingIndicator");
-const searchInput = document.getElementById("gif-search");
 const searchBtn = document.getElementById("gif-search-btn");
 const gifDiv = document.getElementById("gifDiv");
 
@@ -42,9 +41,22 @@ const inRoom = () => {
 
   // Funktion för att skicka meddelanden
   const sendMessage = () => {
-    const message = chattInput.value;
-    socket.emit("send_message", storedRoomName, message);
+    let message = chattInput.value;
     chattInput.value = "";
+    if ((chattInput.value = "/gif")) {
+      let query = chattInput.value;
+      searchGifs(query)
+        .then((gifUrls) => {
+          const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+          // Emit the GIF URL to the server
+          socket.emit("send_gif", storedRoomName, gifUrl);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      socket.emit("send_message", storedRoomName, message);
+    }
   };
 
   // Hantera inkommande meddelanden
@@ -63,19 +75,6 @@ const inRoom = () => {
   };
 
   leaveBtn.addEventListener("click", leaveRoom);
-
-  searchBtn.addEventListener("click", function () {
-    const query = searchInput.value;
-    searchGifs(query)
-      .then((gifUrls) => {
-        const gifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
-        // Emit the GIF URL to the server
-        socket.emit("send_gif", storedRoomName, gifUrl);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  });
 
   socket.on("receive_gif", (username, gifUrl) => {
     displayMessage(`${username}:`);
