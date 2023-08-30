@@ -101,7 +101,7 @@ const inRoom = () => {
   });
 
   socket.on("user_typing", (username) => {
-    typingIndicator.innerText = `${username} skriver`;
+    typingIndicator.innerText = `${username} skriver...`;
   });
 
   socket.on("user_stopped_typing", () => {

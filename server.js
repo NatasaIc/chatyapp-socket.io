@@ -76,7 +76,7 @@ io.on("connection", (socket) => {
 
   // event när användaren börjar skriva
   socket.on("user_typing", () => {
-    socket.to(socket.room).emit("user_typing", socket.username);
+    io.to(socket.room).emit("user_typing", socket.username);
   });
 
   // event när användaren skickar meddelandet
@@ -86,7 +86,7 @@ io.on("connection", (socket) => {
     io.to(room).emit("incoming_message", socket.username, message);
 
     // informerar andra användare att användaren slutat skriva
-    socket.to(room).emit("user_stopped_typing", socket.username);
+    io.to(socket.room).emit("user_stopped_typing");
   });
   socket.on("send_gif", (room, gifUrl) => {
     io.to(room).emit("receive_gif", socket.username, gifUrl);
